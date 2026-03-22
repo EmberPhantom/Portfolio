@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# EmberOS — AI-Powered Portfolio & Blog Engine
 
-## Getting Started
+EmberOS is a high-performance, aesthetically driven personal portfolio and blog engine built with **Next.js 15**, **Supabase**, and **Groq AI**. It features a custom-built, Google Docs-style rich text editor with deep AI integration and a live dashboard for content management.
 
-First, run the development server:
+![EmberOS Preview](public/preview.png)
 
+## ✨ Features
+
+### 🖋️ Advanced Blog Engine
+- **Rich Text Editor**: Custom TipTap-based editor with support for tables, task lists, and code blocks.
+- **Mermaid Diagrams**: Live-rendered flowcharts, sequence diagrams, and Gantt charts directly in your posts.
+- **Google Photos Integration**: Scroll through and insert photos directly from your Google Photos library.
+- **AI writing assistant**: Improve, simplify, expand, or summarize your writing using Groq AI.
+- **Categorization**: Multi-category management with color-coded tags and search filtering.
+
+### 🧠 Intelligent Assistant
+- **Context-Aware Chatbot**: A floating AI assistant that knows your portfolio and past projects.
+- **Deep Memory**: The AI automatically extracts facts from your blog posts to keep your digital profile updated.
+- **Reasoning Mode**: Toggle "Deep Reasoning" (DeepSeek R1) for complex queries.
+
+### 📊 Professional Dashboard
+- **Live Analytics**: Track visitor counts and read contact messages in real-time.
+- **CMS Control**: Full CRUD for blog posts, categories, and AI context memory.
+- **Photo Manager**: Connect your Google account to bridge your cloud photos to your portfolio.
+
+## 🛠️ Tech Stack
+- **Framework**: Next.js (App Router)
+- **Styling**: Vanilla CSS + Framer Motion
+- **Database**: Supabase (PostgreSQL)
+- **AI**: Groq SDK (Llama 3 / DeepSeek R1)
+- **Editor**: TipTap (ProseMirror)
+- **Diagrams**: Mermaid.js
+
+## 🚀 Quick Start
+
+### 1. Clone & Install
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/your-username/emberos.git
+cd emberos
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Configure Environment
+Copy `.env.example` to `.env.local` and fill in your keys:
+- **Supabase**: URL and Anon Key
+- **Groq**: API Key (console.groq.com)
+- **EmailJS**: Service/Template IDs for the contact form
+- **Google Cloud**: Client ID/Secret for Photos integration
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### 3. Database Setup
+Run the SQL commands provided in [SUPABASE_SCHEMA.sql](SUPABASE_SCHEMA.sql) in your Supabase SQL Editor to create the necessary tables and policies.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Run Locally
+```bash
+npm run dev
+```
 
-## Learn More
+## 🌐 Deployment
+This project is optimized for **Vercel**. Connect your repository, add your environment variables in the Vercel dashboard, and deploy.
 
-To learn more about Next.js, take a look at the following resources:
+Don't forget to update your **Google Cloud OAuth Redirect URIs** to your production domain (e.g., `https://yourdomain.com/api/google-photos/callback`).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Developed by [Pranay Chandra](https://pranaychandra.dev)
