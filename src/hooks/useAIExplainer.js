@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY
+const API_KEY = process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY
 const API_URL = 'https://api.anthropic.com/v1/messages'
 
 export function useAIExplainer() {

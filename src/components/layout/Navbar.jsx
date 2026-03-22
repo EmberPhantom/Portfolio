@@ -1,83 +1,55 @@
-import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { Menu, X, Sun, Moon, Circle } from 'lucide-react'
-import { useTheme } from '../../hooks/useTheme'
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
+import {
+  Home,
+  FolderGit2,
+  TestTube2,
+  BookOpen,
+  Mail,
+  Circle,
+  Terminal as TerminalIcon,
+  Sun,
+  Moon,
+} from "lucide-react";
+import { useTheme } from "../../hooks/useTheme";
+import { useTerminal } from "../../context/TerminalContext";
 
 const navLinks = [
-  { name: 'Home', href: '#home' },
-  { name: 'About', href: '#about' },
-  { name: 'Skills', href: '#skills' },
-  { name: 'Projects', href: '#projects' },
-  { name: 'Blog', href: '#blog' },
-  { name: 'Contact', href: '#contact' },
-]
+  { name: "Dashboard", href: "/", icon: Home },
+  { name: "Work", href: "/work", icon: FolderGit2 },
+  { name: "Lab", href: "/lab", icon: TestTube2 },
+  { name: "Journal", href: "/blog", icon: BookOpen },
+  { name: "Connect", href: "/contact", icon: Mail },
+];
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const [activeSection, setActiveSection] = useState('home')
-  const { theme, toggleTheme } = useTheme()
-  const location = useLocation()
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50)
-      
-      const sections = navLinks.map(link => link.href.slice(1))
-      const scrollPosition = window.scrollY + 100
-
-      for (const section of sections) {
-        const element = document.getElementById(section)
-        if (element) {
-          const offsetTop = element.offsetTop
-          const offsetHeight = element.offsetHeight
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            setActiveSection(section)
-            break
-          }
-        }
-      }
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  const handleNavClick = (e, href) => {
-    e.preventDefault()
-    const element = document.getElementById(href.slice(1))
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-    }
-    setIsOpen(false)
-  }
+  const { theme, toggleTheme } = useTheme();
+  const { toggleTerminalMode } = useTerminal();
+  const pathname = usePathname();
 
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled 
-          ? 'bg-forge-black/90 backdrop-blur-md border-b border-forge-muted/20' 
-          : 'bg-transparent'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 relative">
+    <>
+      {/* ---- Desktop Sidebar ---- */}
+      <motion.nav
+        initial={{ x: -100 }}
+        animate={{ x: 0 }}
+        className="hidden md:flex fixed left-0 top-0 h-screen w-20 lg:w-64 bg-forge-surface/80 backdrop-blur-xl border-r border-forge-muted/20 flex-col justify-between py-8 transition-all duration-300 z-50 overflow-y-auto"
+      >
+        <div className="flex flex-col items-center lg:items-start px-0 lg:px-8">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3 mb-12" title="Home" aria-label="EmberOS Home">
+            <div className="w-10 h-10 relative shrink-0">
               <svg viewBox="0 0 40 40" className="w-full h-full">
-                <polygon 
-                  points="20,2 38,11 38,29 20,38 2,29 2,11" 
-                  fill="#F97316"
-                />
-                <text 
-                  x="20" 
-                  y="26" 
-                  textAnchor="middle" 
-                  fill="#0A0A0A" 
-                  fontSize="14" 
+                <polygon points="20,2 38,11 38,29 20,38 2,29 2,11" fill="#F97316" />
+                <text
+                  x="20"
+                  y="26"
+                  textAnchor="middle"
+                  fill="#0A0A0A"
+                  fontSize="14"
                   fontWeight="800"
                   fontFamily="Syne"
                 >
@@ -85,45 +57,70 @@ export default function Navbar() {
                 </text>
               </svg>
             </div>
-            <span className="font-display font-bold text-xl text-white">
-              Pranay
+            <span className="font-display font-bold text-xl text-white hidden lg:block tracking-wide">
+              EmberOS
             </span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
-                className={`text-sm font-medium transition-colors relative ${
-                  activeSection === link.href.slice(1)
-                    ? 'text-orange-500'
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                {link.name}
-                {activeSection === link.href.slice(1) && (
-                  <motion.div
-                    layoutId="activeNav"
-                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-orange-500"
+          {/* Nav Links */}
+          <div className="w-full flex flex-col gap-2">
+            {navLinks.map((link) => {
+              const Icon = link.icon;
+              const isActive =
+                pathname === link.href ||
+                (link.href !== "/" && pathname.startsWith(link.href));
+
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  aria-label={link.name}
+                  className={`relative flex items-center justify-center lg:justify-start gap-4 p-3 rounded-xl transition-all group ${
+                    isActive
+                      ? "text-orange-500 bg-orange-500/10"
+                      : "text-gray-400 hover:text-white hover:bg-forge-muted/20"
+                  }`}
+                  title={link.name}
+                >
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeNavIndicator"
+                      className="absolute left-0 w-1 h-1/2 bg-orange-500 rounded-r-md hidden lg:block"
+                    />
+                  )}
+                  <Icon
+                    className={`w-5 h-5 transition-colors ${
+                      isActive ? "text-orange-500" : "group-hover:text-white"
+                    }`}
                   />
-                )}
-              </a>
-            ))}
-            
-            <div className="flex items-center gap-2">
-              <Circle 
-                className="w-2 h-2 fill-green-500 text-green-500 animate-pulse" 
-              />
-              <span className="text-xs text-green-500">Open to Work</span>
-            </div>
+                  <span className="font-medium text-sm hidden lg:block">
+                    {link.name}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Bottom Controls */}
+        <div className="flex flex-col items-center lg:items-start px-0 lg:px-8 gap-4">
+          <div className="flex flex-col lg:flex-row items-center gap-2 lg:gap-4 mb-4">
+            <button
+              onClick={toggleTerminalMode}
+              className="p-3 bg-forge-muted/10 rounded-xl hover:bg-forge-muted/30 transition-colors group"
+              title="Terminal Mode"
+              aria-label="Open Terminal"
+            >
+              <TerminalIcon className="w-5 h-5 text-gray-400 group-hover:text-orange-500" />
+            </button>
 
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg hover:bg-forge-surface transition-colors"
+              className="p-3 bg-forge-muted/10 rounded-xl hover:bg-forge-muted/30 transition-colors"
+              title="Toggle Theme"
+              aria-label={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
             >
-              {theme === 'dark' ? (
+              {theme === "dark" ? (
                 <Sun className="w-5 h-5 text-gray-400" />
               ) : (
                 <Moon className="w-5 h-5 text-gray-600" />
@@ -131,46 +128,46 @@ export default function Navbar() {
             </button>
           </div>
 
-          <button
-            className="md:hidden p-2"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? (
-              <X className="w-6 h-6 text-white" />
-            ) : (
-              <Menu className="w-6 h-6 text-white" />
-            )}
-          </button>
+          <div className="flex flex-col items-center lg:flex-row lg:items-center gap-2 p-3 bg-forge-muted/10 rounded-xl w-full justify-center lg:justify-start border border-forge-muted/20 text-xs">
+            <Circle className="w-2 h-2 fill-green-500 text-green-500 animate-pulse shrink-0" />
+            <span className="text-gray-400 hidden lg:inline">
+              Status:{" "}
+              <span className="text-white font-medium">Online</span>
+            </span>
+          </div>
         </div>
+      </motion.nav>
 
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden mt-4 pb-4"
-          >
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
-                className={`block py-2 text-lg ${
-                  activeSection === link.href.slice(1)
-                    ? 'text-orange-500'
-                    : 'text-gray-400'
-                }`}
-              >
-                {link.name}
-              </a>
-            ))}
-            <div className="flex items-center gap-2 mt-4">
-              <Circle className="w-2 h-2 fill-green-500 text-green-500 animate-pulse" />
-              <span className="text-sm text-green-500">Open to Work</span>
-            </div>
-          </motion.div>
-        )}
-      </div>
-    </motion.nav>
-  )
+      {/* ---- Mobile Bottom Navigation Bar ---- */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-forge-surface/95 backdrop-blur-xl border-t border-forge-muted/20 flex items-center justify-around z-50 px-2">
+        {navLinks.map((link) => {
+          const Icon = link.icon;
+          const isActive =
+            pathname === link.href ||
+            (link.href !== "/" && pathname.startsWith(link.href));
+          return (
+            <Link
+              key={link.name}
+              href={link.href}
+              aria-label={link.name}
+              className={`flex flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-xl transition-colors ${
+                isActive ? "text-orange-500" : "text-gray-500 hover:text-gray-300"
+              }`}
+            >
+              <Icon className="w-5 h-5" />
+              <span className="text-[10px] font-medium tracking-wide">{link.name}</span>
+            </Link>
+          );
+        })}
+        <button
+          onClick={toggleTerminalMode}
+          aria-label="Open Terminal"
+          className="flex flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-xl text-gray-500 hover:text-orange-500 transition-colors"
+        >
+          <TerminalIcon className="w-5 h-5" />
+          <span className="text-[10px] font-medium tracking-wide">CLI</span>
+        </button>
+      </nav>
+    </>
+  );
 }

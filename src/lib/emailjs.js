@@ -1,8 +1,8 @@
 import emailjs from 'emailjs-com'
 
-const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_xxxx'
-const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_xxxx'
-const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'xxxx'
+const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'service_xxxx'
+const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || 'template_xxxx'
+const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || 'xxxx'
 
 export async function sendEmail(formData) {
   if (SERVICE_ID === 'service_xxxx') {

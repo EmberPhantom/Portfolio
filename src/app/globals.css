@@ -1,0 +1,56 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  /* ===== Color Palette ===== */
+  --color-forge-black: #0A0A0A;
+  --color-forge-surface: #141414;
+  --color-forge-muted: #3F3F46;
+
+  --color-orange-400: #FB923C;
+  --color-orange-500: #F97316;
+  --color-orange-600: #EA580C;
+
+  /* ===== Typography ===== */
+  --font-display: "Syne", sans-serif;
+  --font-body: "DM Sans", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* ===== Custom Animations ===== */
+  --animate-pulse-ring: pulse-ring 2s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* ===== Base Styles ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--color-forge-black);
+  color: white;
+  font-family: var(--font-body);
+}
+
+::selection {
+  background-color: rgb(249 115 22 / 0.30);
+  color: white;
+}
+
+/* ===== Custom Scrollbar ===== */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--color-forge-black); }
+::-webkit-scrollbar-thumb { background: var(--color-forge-muted); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-orange-500); }
+
+/* ===== Interactive class (disables cursor override) ===== */
+.interactive { cursor: auto; }

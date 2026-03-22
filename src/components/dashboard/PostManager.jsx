@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Edit, Trash2, Eye, Save, Loader2 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
+import dynamic from 'next/dynamic'
+const BlogEditor = dynamic(() => import('./BlogEditor'), { ssr: false })
 
 export default function PostManager() {
   const [posts, setPosts] = useState([])

@@ -1,6 +1,10 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co'
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key'
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Create a single supabase client for interacting with your database
+// We only initialize if keys are present to prevent crashes during free local dev without .env
+export const supabase = supabaseUrl && supabaseAnonKey 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
