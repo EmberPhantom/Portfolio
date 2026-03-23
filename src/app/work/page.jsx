@@ -5,7 +5,7 @@ export default async function Work() {
   const repos = await fetchGithubProjects();
 
   return (
-    <div className="pt-32 pb-32 px-6 md:px-12 max-w-7xl mx-auto w-full">
+    <div className="pt-32 pb-32 px-6 md:px-12 max-w-7xl mx-auto w-full relative">
       <div className="mb-32">
         <h1 className="text-6xl md:text-9xl font-display font-black text-text uppercase tracking-tighter leading-none mb-6">
           Selected <br/><span className="text-accent">Works.</span>

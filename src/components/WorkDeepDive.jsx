@@ -21,7 +21,7 @@ export default function WorkDeepDive({ slug, projectInitialData, storyData }) {
   };
 
   return (
-    <div className="pt-24 pb-32 px-6 md:px-12 max-w-7xl mx-auto min-h-screen w-full">
+    <div className="pt-24 pb-32 px-6 md:px-12 max-w-7xl mx-auto min-h-screen w-full relative">
       <Link href="/work" className="inline-flex items-center gap-2 text-text-muted hover:text-accent transition-colors mb-12 group">
         <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
         <span className="font-semibold uppercase tracking-wider text-sm">Back to Works</span>
