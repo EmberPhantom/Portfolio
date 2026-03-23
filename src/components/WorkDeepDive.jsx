@@ -22,7 +22,7 @@ export default function WorkDeepDive({ slug, projectInitialData, storyData }) {
 
   return (
     <div className="pt-24 pb-32 px-6 md:px-12 max-w-7xl mx-auto min-h-screen w-full">
-      <Link href="/work" className="inline-flex items-center gap-2 text-gray-400 hover:text-orange-500 transition-colors mb-12 group">
+      <Link href="/work" className="inline-flex items-center gap-2 text-text-muted hover:text-accent transition-colors mb-12 group">
         <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
         <span className="font-semibold uppercase tracking-wider text-sm">Back to Works</span>
       </Link>
@@ -42,7 +42,7 @@ export default function WorkDeepDive({ slug, projectInitialData, storyData }) {
         <MetricCard icon={Star} label="Stars" value={project.stargazers_count || 0} />
         <MetricCard icon={GitFork} label="Forks" value={project.forks_count || 0} />
         <MetricCard icon={Eye} label="Watchers" value={project.watchers_count || 0} />
-        <a href={project.html_url || `https://github.com/EmberPhantom/${project.githubRepo || slug}`} target="_blank" rel="noreferrer" className="flex flex-col p-6 bg-orange-500 text-forge-black rounded-2xl hover:bg-orange-400 transition-colors justify-center items-center group">
+        <a href={project.html_url || `https://github.com/EmberPhantom/${project.githubRepo || slug}`} target="_blank" rel="noreferrer" className="flex flex-col p-6 bg-accent text-bg rounded-2xl hover:bg-accent-hover transition-colors justify-center items-center group">
           <Github className="w-8 h-8 mb-2 group-hover:scale-110 transition-transform" />
           <span className="font-bold uppercase tracking-wider text-sm">View Source</span>
         </a>
@@ -63,10 +63,10 @@ export default function WorkDeepDive({ slug, projectInitialData, storyData }) {
 
 function MetricCard({ icon: Icon, label, value }) {
   return (
-    <div className="flex flex-col p-6 bg-forge-surface/50 border border-forge-muted/20 rounded-2xl w-full">
-      <Icon className="w-6 h-6 text-orange-500 mb-4" />
-      <span className="text-gray-400 text-sm uppercase tracking-wider mb-1">{label}</span>
-      <span className="text-3xl font-mono text-white">{value}</span>
+    <div className="flex flex-col p-6 bg-surface/50 border border-muted/20 rounded-2xl w-full">
+      <Icon className="w-6 h-6 text-accent mb-4" />
+      <span className="text-text-muted text-sm uppercase tracking-wider mb-1">{label}</span>
+      <span className="text-3xl font-mono text-text">{value}</span>
     </div>
   );
 }

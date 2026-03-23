@@ -36,19 +36,19 @@ export default function Navbar() {
       <motion.nav
         initial={{ x: -100 }}
         animate={{ x: 0 }}
-        className="hidden md:flex fixed left-0 top-0 h-screen w-20 lg:w-64 bg-forge-surface/80 backdrop-blur-xl border-r border-forge-muted/20 flex-col justify-between py-8 transition-all duration-300 z-50 overflow-y-auto"
+        className="hidden md:flex fixed left-0 top-0 h-screen w-20 lg:w-64 bg-surface/80 backdrop-blur-xl border-r border-muted/20 flex-col justify-between py-8 transition-all duration-300 z-50 overflow-y-auto"
       >
         <div className="flex flex-col items-center lg:items-start px-0 lg:px-8">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 mb-12" title="Home" aria-label="EmberOS Home">
             <div className="w-10 h-10 relative shrink-0">
               <svg viewBox="0 0 40 40" className="w-full h-full">
-                <polygon points="20,2 38,11 38,29 20,38 2,29 2,11" fill="#F97316" />
+                <polygon points="20,2 38,11 38,29 20,38 2,29 2,11" fill="var(--accent)" />
                 <text
                   x="20"
                   y="26"
                   textAnchor="middle"
-                  fill="#0A0A0A"
+                  fill="var(--bg)"
                   fontSize="14"
                   fontWeight="800"
                   fontFamily="Syne"
@@ -57,7 +57,7 @@ export default function Navbar() {
                 </text>
               </svg>
             </div>
-            <span className="font-display font-bold text-xl text-white hidden lg:block tracking-wide">
+            <span className="font-display font-bold text-xl text-text hidden lg:block tracking-wide">
               EmberOS
             </span>
           </Link>
@@ -77,8 +77,8 @@ export default function Navbar() {
                   aria-label={link.name}
                   className={`relative flex items-center justify-center lg:justify-start gap-4 p-3 rounded-xl transition-all group ${
                     isActive
-                      ? "text-orange-500 bg-orange-500/10"
-                      : "text-gray-400 hover:text-white hover:bg-forge-muted/20"
+                      ? "text-accent bg-accent/10"
+                      : "text-text-muted hover:text-text hover:bg-muted/20"
                   }`}
                   title={link.name}
                 >
@@ -90,7 +90,7 @@ export default function Navbar() {
                   )}
                   <Icon
                     className={`w-5 h-5 transition-colors ${
-                      isActive ? "text-orange-500" : "group-hover:text-white"
+                      isActive ? "text-accent" : "group-hover:text-text"
                     }`}
                   />
                   <span className="font-medium text-sm hidden lg:block">
@@ -107,39 +107,39 @@ export default function Navbar() {
           <div className="flex flex-col lg:flex-row items-center gap-2 lg:gap-4 mb-4">
             <button
               onClick={toggleTerminalMode}
-              className="p-3 bg-forge-muted/10 rounded-xl hover:bg-forge-muted/30 transition-colors group"
+              className="p-3 bg-muted/10 rounded-xl hover:bg-muted/30 transition-colors group"
               title="Terminal Mode"
               aria-label="Open Terminal"
             >
-              <TerminalIcon className="w-5 h-5 text-gray-400 group-hover:text-orange-500" />
+              <TerminalIcon className="w-5 h-5 text-text-muted group-hover:text-accent" />
             </button>
 
             <button
               onClick={toggleTheme}
-              className="p-3 bg-forge-muted/10 rounded-xl hover:bg-forge-muted/30 transition-colors"
+              className="p-3 bg-muted/10 rounded-xl hover:bg-muted/30 transition-colors"
               title="Toggle Theme"
               aria-label={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
             >
               {theme === "dark" ? (
-                <Sun className="w-5 h-5 text-gray-400" />
+                <Sun className="w-5 h-5 text-text-muted" />
               ) : (
-                <Moon className="w-5 h-5 text-gray-600" />
+                <Moon className="w-5 h-5 text-text-muted" />
               )}
             </button>
           </div>
 
-          <div className="flex flex-col items-center lg:flex-row lg:items-center gap-2 p-3 bg-forge-muted/10 rounded-xl w-full justify-center lg:justify-start border border-forge-muted/20 text-xs">
+          <div className="flex flex-col items-center lg:flex-row lg:items-center gap-2 p-3 bg-muted/10 rounded-xl w-full justify-center lg:justify-start border border-muted/20 text-xs">
             <Circle className="w-2 h-2 fill-green-500 text-green-500 animate-pulse shrink-0" />
-            <span className="text-gray-400 hidden lg:inline">
+            <span className="text-text-muted hidden lg:inline">
               Status:{" "}
-              <span className="text-white font-medium">Online</span>
+              <span className="text-text font-medium">Online</span>
             </span>
           </div>
         </div>
       </motion.nav>
 
       {/* ---- Mobile Bottom Navigation Bar ---- */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-forge-surface/95 backdrop-blur-xl border-t border-forge-muted/20 flex items-center justify-around z-50 px-2">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 h-20 bg-surface/95 backdrop-blur-xl border-t border-muted/20 flex items-center justify-around z-50 px-2 pb-4 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
         {navLinks.map((link) => {
           const Icon = link.icon;
           const isActive =
@@ -151,7 +151,7 @@ export default function Navbar() {
               href={link.href}
               aria-label={link.name}
               className={`flex flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-xl transition-colors ${
-                isActive ? "text-orange-500" : "text-gray-500 hover:text-gray-300"
+                isActive ? "text-accent" : "text-text-muted"
               }`}
             >
               <Icon className="w-5 h-5" />
@@ -162,7 +162,7 @@ export default function Navbar() {
         <button
           onClick={toggleTerminalMode}
           aria-label="Open Terminal"
-          className="flex flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-xl text-gray-500 hover:text-orange-500 transition-colors"
+          className="flex flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-xl text-text-muted hover:text-accent transition-colors"
         >
           <TerminalIcon className="w-5 h-5" />
           <span className="text-[10px] font-medium tracking-wide">CLI</span>

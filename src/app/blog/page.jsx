@@ -21,13 +21,13 @@ function BlogCard({ post, index }) {
     >
       <Link
         href={`/blog/${post.slug}`}
-        className="group block overflow-hidden rounded-2xl border border-forge-muted/20 bg-[#0c0c0c] hover:border-orange-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/5"
+        className="group block overflow-hidden rounded-2xl border border-muted/20 bg-surface hover:border-accent/40 transition-all duration-300 hover:shadow-lg hover:shadow-accent/5"
       >
         {/* Cover Image */}
         {post.cover_image && (
           <div className="relative h-52 overflow-hidden">
             <img src={post.cover_image} alt={post.title} className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c0c] to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-surface to-transparent" />
           </div>
         )}
 
@@ -39,22 +39,22 @@ function BlogCard({ post, index }) {
                 <Hash className="w-3 h-3" />{post.categories.name}
               </span>
             )}
-            <span className="text-xs font-mono text-gray-600">
+            <span className="text-xs font-mono text-text-muted">
               {new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
             </span>
-            <span className="flex items-center gap-1 text-xs font-mono text-gray-600 ml-auto">
+            <span className="flex items-center gap-1 text-xs font-mono text-text-muted ml-auto">
               <Clock className="w-3 h-3" />{rt} min read
             </span>
           </div>
 
           {/* Title */}
-          <h2 className="text-2xl md:text-3xl font-display font-bold text-white mb-3 group-hover:text-orange-500 transition-colors leading-tight">
+          <h2 className="text-2xl md:text-3xl font-display font-bold text-text mb-3 group-hover:text-accent transition-colors leading-tight">
             {post.title}
           </h2>
 
           {/* Excerpt */}
           {post.excerpt && (
-            <p className="text-gray-400 text-base leading-relaxed mb-5 line-clamp-2">{post.excerpt}</p>
+            <p className="text-text-muted text-base leading-relaxed mb-5 line-clamp-2">{post.excerpt}</p>
           )}
 
           {/* Tags + CTA */}
@@ -110,11 +110,11 @@ export default function BlogList() {
     <div className="pt-32 pb-32 px-6 md:px-12 max-w-5xl mx-auto min-h-screen w-full">
       {/* Hero */}
       <div className="mb-16">
-        <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-orange-500 font-mono tracking-[0.2em] text-sm uppercase mb-4">// JOURNAL</motion.p>
-        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="text-5xl md:text-8xl font-display font-black text-white uppercase tracking-tighter mb-6">
-          The <span className="text-orange-500">Journal.</span>
+        <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-accent font-mono tracking-[0.2em] text-sm uppercase mb-4">// JOURNAL</motion.p>
+        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="text-5xl md:text-8xl font-display font-black text-text uppercase tracking-tighter mb-6">
+          The <span className="text-accent">Journal.</span>
         </motion.h1>
-        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} className="text-gray-400 text-xl max-w-xl">
+         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} className="text-text-muted text-xl max-w-xl">
           Research, projects, events — documented in real time.
         </motion.p>
       </div>
@@ -128,7 +128,7 @@ export default function BlogList() {
             placeholder="Search articles..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full bg-[#0c0c0c] border border-forge-muted/20 rounded-xl pl-11 pr-4 py-3 text-white focus:border-orange-500/50 outline-none transition-colors font-body"
+            className="w-full bg-surface border border-muted/20 rounded-xl pl-11 pr-4 py-3 text-text focus:border-accent/50 outline-none transition-colors font-body"
           />
         </div>
 

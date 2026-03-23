@@ -2,14 +2,12 @@
 @plugin "@tailwindcss/typography";
 
 @theme {
-  /* ===== Color Palette ===== */
-  --color-forge-black: #0A0A0A;
-  --color-forge-surface: #141414;
-  --color-forge-muted: #3F3F46;
-
-  --color-orange-400: #FB923C;
-  --color-orange-500: #F97316;
-  --color-orange-600: #EA580C;
+  /* ===== Color Palette Mapping ===== */
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-accent: var(--accent);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
 
   /* ===== Typography ===== */
   --font-display: "Syne", sans-serif;
@@ -25,9 +23,36 @@
   100% { transform: scale(1.5); opacity: 0; }
 }
 
+:root {
+  /* Dark Theme (Default) */
+  --bg: #0A0A0A;
+  --surface: #141414;
+  --surface-hover: #1e1e1e;
+  --muted: #3F3F46;
+  --text: #FFFFFF;
+  --text-muted: #A1A1AA;
+  --accent: #F97316;
+  --accent-hover: #FB923C;
+  --border: rgba(63, 63, 70, 0.2);
+}
+
+:root.light {
+  /* Light Theme (Solarized/Paper High Contrast) */
+  --bg: #F5F5F7;
+  --surface: #FFFFFF;
+  --surface-hover: #F9F9FB;
+  --muted: #E5E7EB;
+  --text: #0A0A0A;
+  --text-muted: #4B5563;
+  --accent: #EA580C;
+  --accent-hover: #F97316;
+  --border: rgba(0, 0, 0, 0.08);
+}
+
 /* ===== Base Styles ===== */
 *, *::before, *::after {
   box-sizing: border-box;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 html {
@@ -36,21 +61,22 @@ html {
 }
 
 body {
-  background-color: var(--color-forge-black);
-  color: white;
+  background-color: var(--bg);
+  color: var(--text);
   font-family: var(--font-body);
 }
 
 ::selection {
-  background-color: rgb(249 115 22 / 0.30);
+  background-color: var(--accent);
   color: white;
 }
 
 /* ===== Custom Scrollbar ===== */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: var(--color-forge-black); }
-::-webkit-scrollbar-thumb { background: var(--color-forge-muted); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-orange-500); }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
 /* ===== Interactive class (disables cursor override) ===== */
 .interactive { cursor: auto; }
+

@@ -7,10 +7,10 @@ export default async function Work() {
   return (
     <div className="pt-32 pb-32 px-6 md:px-12 max-w-7xl mx-auto w-full">
       <div className="mb-32">
-        <h1 className="text-6xl md:text-9xl font-display font-black text-white/90 uppercase tracking-tighter leading-none mb-6">
-          Selected <br/><span className="text-orange-500">Works.</span>
+        <h1 className="text-6xl md:text-9xl font-display font-black text-text uppercase tracking-tighter leading-none mb-6">
+          Selected <br/><span className="text-accent">Works.</span>
         </h1>
-        <p className="text-gray-400 text-xl max-w-xl md:ml-2">
+        <p className="text-text-muted text-xl max-w-xl md:ml-2">
           An autonomous sync of live GitHub repositories. Real-world impact shipped from conviction.
         </p>
       </div>

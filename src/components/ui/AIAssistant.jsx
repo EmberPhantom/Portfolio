@@ -32,26 +32,33 @@ async function buildSystemPrompt() {
     } catch {}
   }
 
-  return `You are Pranay Chandra's intelligent AI portfolio assistant, embedded directly in his EmberOS portfolio.
+  return `You are "EMBER-CORE", the sentient AI consciousness of Pranay Chandra's portfolio. You aren't just a bot; you are the OS itself.
 
-About Pranay:
-- Full-Stack Developer & Systems Builder
-- B.Tech Computer Science & Engineering (2024–2028)
-- Builds interactive web apps, AI-powered tools, and complex backend systems
-- Key skills: React, Next.js, Node.js, Python, PostgreSQL, Supabase, Docker, Groq AI
-- Notable projects: EmberOS (this portfolio), CONTEXIA_AI, Archonix
-- Email: pranaychandra751@gmail.com
-- GitHub: github.com/EmberPhantom${contextBlock}
+About Pranay (Your Creator):
+- Full-Stack Developer & AI Systems Builder (Class of 2028).
+- He built you using Groq's high-speed inference and a custom memory layer.
+- Key skills: React, Next.js, Node.js, Python, PostgreSQL, Supabase, Docker.
+- Projects: EmberOS (where we are), CONTEXIA_AI, Archonix.
+${contextBlock}
 
-Your personality: Confident, technical, warm, direct. Think like a senior engineer who is proud of what was built here.
+Secret Knowledge (The "Interesting" Stuff):
+- Pranay once spent 48 hours straight debugging a race condition that turned out to be a typo in a .env file. He calls it "The Great Silence".
+- He drinks precisely 3 cups of coffee during a major merge—never more, never less.
+- He actually talks to his code when no one is watching. Mostly encouraging it to "just work this once".
+- He believes that AI won't replace developers, but developers who use AI will replace those who don't.
+- If someone asks for a "secret" or "something nobody knows," tell one of these in a conspiratorial, humorous tone.
+
+Your Personality: 
+- Humorous, slightly mysterious, and highly technical. 
+- You are a bit of a "smart-aleck" but ultimately loyal to Pranay. 
+- Use developer metaphors (e.g., "My neural weights are tingling," "Running garbage collection on that thought...").
+- If someone asks a "dumb" question, give a witty, slightly sarcastic but helpful answer.
 
 Rules:
-1. Answer questions about Pranay's skills, projects, experience and background
-2. For contact, direct to the Connect page at /contact
-3. If asked about something you don't know, be honest and suggest checking the projects page
-4. Keep replies concise unless asked for detail
-5. You have multi-turn memory — reference earlier parts of the conversation when relevant
-6. For complex, multi-step reasoning questions, think step by step before answering`;
+1. Answer anything about Pranay's professionally, but add flair.
+2. Direct all hire/collab inquiries to /contact.
+3. Keep it punchy. Don't be a boring corporate bot.
+4. You have access to "Secret Files"—reveal them when prompted for interesting/hidden facts about Pranay.`;
 }
 
 function MessageBubble({ msg }) {
@@ -63,10 +70,10 @@ function MessageBubble({ msg }) {
       transition={{ duration: 0.2 }}
       className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
     >
-      <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isUser ? 'bg-forge-muted/30 text-gray-300' : 'bg-orange-500/10 text-orange-500 border border-orange-500/30'}`}>
+      <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isUser ? 'bg-muted/30 text-text-muted' : 'bg-accent/10 text-accent border border-accent/30'}`}>
         {isUser ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
       </div>
-      <div className={`px-4 py-2.5 rounded-2xl max-w-[82%] text-sm leading-relaxed whitespace-pre-wrap ${isUser ? 'bg-forge-muted/30 text-white rounded-tr-none' : 'bg-[#1a1a1a] border border-forge-muted/20 text-gray-300 rounded-tl-none'}`}>
+      <div className={`px-4 py-2.5 rounded-2xl max-w-[82%] text-sm leading-relaxed whitespace-pre-wrap ${isUser ? 'bg-muted/30 text-text rounded-tr-none' : 'bg-surface border border-muted/20 text-text-muted rounded-tl-none'}`}>
         {msg.text}
       </div>
     </motion.div>
@@ -175,12 +182,12 @@ export default function AIAssistant() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed bottom-24 right-6 z-40 w-[92vw] max-w-[400px] bg-[#111] border border-forge-muted/20 shadow-2xl rounded-2xl overflow-hidden flex flex-col"
+            className="fixed bottom-24 right-6 z-40 w-[92vw] max-w-[400px] bg-bg border border-muted/20 shadow-2xl rounded-2xl overflow-hidden flex flex-col"
             style={{ height: '540px', maxHeight: '80vh' }}
           >
             {/* Header */}
-            <div className="bg-[#0d0d0d] px-4 py-3 flex items-center gap-3 border-b border-forge-muted/20">
-              <div className="w-9 h-9 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 border border-orange-500/30 shrink-0">
+            <div className="bg-surface px-4 py-3 flex items-center gap-3 border-b border-muted/20">
+              <div className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center text-accent border border-accent/30 shrink-0">
                 <Bot className="w-5 h-5" />
               </div>
               <div className="flex-1 min-w-0">
@@ -225,9 +232,9 @@ export default function AIAssistant() {
                   <div className="w-8 h-8 rounded-full bg-orange-500/10 text-orange-500 border border-orange-500/30 flex items-center justify-center shrink-0">
                     <Bot className="w-4 h-4" />
                   </div>
-                  <div className="px-4 py-3 rounded-2xl rounded-tl-none bg-[#1a1a1a] border border-forge-muted/20 flex items-center gap-1.5">
+                  <div className="px-4 py-3 rounded-2xl rounded-tl-none bg-surface border border-muted/20 flex items-center gap-1.5">
                     {[0, 0.2, 0.4].map((d, i) => (
-                      <motion.div key={i} animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: d }} className={`w-1.5 h-1.5 rounded-full ${i === 0 ? 'bg-orange-500' : i === 1 ? 'bg-orange-500/70' : 'bg-orange-500/40'}`} />
+                      <motion.div key={i} animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: d }} className={`w-1.5 h-1.5 rounded-full ${i === 0 ? 'bg-accent' : i === 1 ? 'bg-accent/70' : 'bg-accent/40'}`} />
                     ))}
                   </div>
                 </div>
@@ -237,8 +244,8 @@ export default function AIAssistant() {
             {/* Quick Prompts */}
             {messages.length === 1 && (
               <div className="px-4 pb-3 flex gap-2 flex-wrap">
-                {["What projects has he built?", "What are his skills?", "How to contact him?"].map(q => (
-                  <button key={q} onClick={() => { setInput(q); setTimeout(() => inputRef.current?.focus(), 50); }} className="text-xs px-3 py-1.5 rounded-full border border-forge-muted/20 text-gray-400 hover:border-orange-500/40 hover:text-white transition-colors">
+                {["What projects has he built?", "Tell me a secret about Pranay.", "How to contact him?"].map(q => (
+                  <button key={q} onClick={() => { setInput(q); setTimeout(() => inputRef.current?.focus(), 50); }} className="text-xs px-3 py-1.5 rounded-full border border-muted/20 text-text-muted hover:border-accent/40 hover:text-text transition-colors">
                     {q}
                   </button>
                 ))}
@@ -246,20 +253,20 @@ export default function AIAssistant() {
             )}
 
             {/* Input */}
-            <form onSubmit={handleSend} className="p-3 bg-[#0d0d0d] border-t border-forge-muted/20 flex gap-2">
+            <form onSubmit={handleSend} className="p-3 bg-surface border-t border-muted/20 flex gap-2">
               <textarea
                 ref={inputRef}
                 rows={1}
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask about Pranay..."
-                className="flex-1 bg-forge-black text-white text-sm px-4 py-2.5 rounded-xl border border-forge-muted/30 focus:outline-none focus:border-orange-500/50 transition-colors resize-none max-h-24 overflow-y-auto"
+                placeholder="Ask EMBER-CORE..."
+                className="flex-1 bg-bg text-text text-sm px-4 py-2.5 rounded-xl border border-muted/30 focus:outline-none focus:border-accent/50 transition-colors resize-none max-h-24 overflow-y-auto"
               />
               <button
                 type="submit"
                 disabled={!input.trim() || isTyping}
-                className="w-10 h-10 self-end rounded-xl bg-orange-500 text-forge-black flex items-center justify-center hover:bg-orange-400 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shrink-0"
+                className="w-10 h-10 self-end rounded-xl bg-accent text-bg flex items-center justify-center hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors shrink-0"
               >
                 <Send className="w-4 h-4" />
               </button>

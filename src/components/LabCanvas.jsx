@@ -80,7 +80,7 @@ export default function LabCanvas() {
       .force('collide', d3.forceCollide().radius(d => d.radius + 10).iterations(2));
 
     const link = svg.append('g')
-      .attr('stroke', '#3F3F46')
+      .attr('stroke', 'var(--muted)')
       .attr('stroke-opacity', 0.6)
       .selectAll('line')
       .data(links)
@@ -99,8 +99,8 @@ export default function LabCanvas() {
 
     node.append('circle')
       .attr('r', d => d.radius)
-      .attr('fill', d => d.group === 'root' ? '#F97316' : d.group === 'category' ? '#EA580C' : '#141414')
-      .attr('stroke', d => d.group === 'skill' ? '#F97316' : 'none')
+      .attr('fill', d => d.group === 'root' ? 'var(--accent)' : d.group === 'category' ? 'var(--accent-hover)' : 'var(--surface)')
+      .attr('stroke', d => d.group === 'skill' ? 'var(--accent)' : 'none')
       .attr('stroke-width', 2)
       .on('mouseover', (event, d) => setHoveredNode(d))
       .on('mouseout', () => setHoveredNode(null));
@@ -111,7 +111,7 @@ export default function LabCanvas() {
       .attr('y', d => d.group === 'skill' ? d.radius + 18 : 0)
       .attr('text-anchor', 'middle')
       .attr('alignment-baseline', 'middle')
-      .attr('fill', d => d.group === 'skill' ? '#A1A1AA' : '#FFFFFF')
+      .attr('fill', d => d.group === 'skill' ? 'var(--text-muted)' : 'var(--text)')
       .attr('font-size', d => d.group === 'skill' ? '12px' : '14px')
       .attr('font-weight', d => d.group === 'root' ? 'bold' : 'normal')
       .attr('font-family', 'Syne, sans-serif')
@@ -164,7 +164,7 @@ export default function LabCanvas() {
   }, []);
 
   return (
-    <div className="relative w-full border border-forge-muted/20 rounded-3xl bg-[#0c0c0c] flex items-center justify-center overflow-hidden">
+    <div className="relative w-full border border-muted/20 rounded-3xl bg-bg flex items-center justify-center overflow-hidden">
       <div ref={containerRef} className="w-full h-[700px] cursor-grab active:cursor-grabbing interactive relative z-10" />
       
       <AnimatePresence>
@@ -173,18 +173,18 @@ export default function LabCanvas() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            className="absolute bottom-8 right-8 bg-forge-surface/80 backdrop-blur-md p-6 rounded-2xl border border-orange-500/50 shadow-2xl pointer-events-none z-20"
+            className="absolute bottom-8 right-8 bg-surface/80 backdrop-blur-md p-6 rounded-2xl border border-accent/50 shadow-2xl pointer-events-none z-20"
           >
-            <h3 className="text-white font-bold text-xl mb-2">{hoveredNode.label}</h3>
+            <h3 className="text-text font-bold text-xl mb-2">{hoveredNode.label}</h3>
             <div className="flex items-center gap-4">
-              <div className="w-48 h-2 bg-forge-black rounded-full overflow-hidden">
+              <div className="w-48 h-2 bg-muted/30 rounded-full overflow-hidden">
                 <motion.div 
-                  initial={{ width: 0 }}
-                  animate={{ width: `${hoveredNode.level}%` }}
-                  className="h-full bg-gradient-to-r from-orange-600 to-orange-400"
+                   initial={{ width: 0 }}
+                   animate={{ width: `${hoveredNode.level}%` }}
+                   className="h-full bg-gradient-to-r from-accent to-accent-hover"
                 />
               </div>
-              <span className="text-orange-500 font-mono font-bold tracking-wider">{hoveredNode.level}%</span>
+              <span className="text-accent font-mono font-bold tracking-wider">{hoveredNode.level}%</span>
             </div>
           </motion.div>
         )}
