@@ -50,5 +50,8 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.1",
     "tailwindcss": "^4"
+  },
+  "overrides": {
+    "node-domexception": "npm:native-domexception@^1.0.0"
   }
 }
