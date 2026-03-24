@@ -26,9 +26,11 @@
   100% { transform: scale(1.5); opacity: 0; }
 }
 
-@tailwind utilities;
-
 * {
+  cursor: none !important;
+}
+
+a, button, input, textarea, select, [role="button"] {
   cursor: none !important;
 }
 
@@ -87,5 +89,5 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
 /* ===== Interactive class (disables cursor override) ===== */
-.interactive { cursor: auto; }
+.interactive { cursor: none !important; }
 

@@ -15,7 +15,7 @@ export default function CustomCursor() {
 
   return (
     <motion.div
-      className="fixed top-0 left-0 pointer-events-none z-[9999] w-6 h-6"
+      className="fixed top-0 left-0 pointer-events-none z-[9999]"
       animate={{
         x: mousePosition.x,
         y: mousePosition.y,
@@ -27,19 +27,15 @@ export default function CustomCursor() {
       }}
     >
       <svg 
-        width="18" 
-        height="24" 
-        viewBox="0 0 18 24" 
+        width="12" 
+        height="16" 
+        viewBox="0 0 12 16" 
         fill="none" 
         xmlns="http://www.w3.org/2000/svg"
-        className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]"
       >
         <path 
-          d="M0.5 0V22.5L5.7 17.3L9 23.5L12 22L8.7 15.8H15.5L0.5 0Z" 
+          d="M0 0V15.5L3.5 12L6 16L8 15L5.5 11H11L0 0Z" 
           fill="var(--accent)"
-          stroke="var(--bg)"
-          strokeWidth="1.5"
-          strokeLinejoin="round"
         />
       </svg>
     </motion.div>
