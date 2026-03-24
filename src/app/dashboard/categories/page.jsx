@@ -41,41 +41,41 @@ function CategoryForm({ category, onSave, onCancel }) {
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       onSubmit={handleSubmit}
-      className="mb-6 p-5 bg-forge-surface border border-orange-500/30 rounded-xl space-y-4"
+      className="mb-8 p-6 bg-surface border border-accent/20 rounded-2xl shadow-xl shadow-black/10 space-y-6"
     >
       <h3 className="font-bold text-white">{category ? 'Edit Category' : 'New Category'}</h3>
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs text-gray-500 mb-1 uppercase tracking-wider font-mono">Name</label>
+          <label className="block text-[10px] text-text-muted mb-2 uppercase tracking-widest font-black">Name</label>
           <input
             type="text"
             required
             value={form.name}
             onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-            className="w-full bg-forge-black border border-forge-muted/20 rounded-lg px-3 py-2 text-white text-sm focus:border-orange-500 outline-none"
+            className="w-full bg-bg border border-muted/20 rounded-xl px-4 py-2.5 text-text text-sm focus:border-accent outline-none"
             placeholder="e.g. AI Research"
           />
         </div>
         <div>
-          <label className="block text-xs text-gray-500 mb-1 uppercase tracking-wider font-mono">Description</label>
+          <label className="block text-[10px] text-text-muted mb-2 uppercase tracking-widest font-black">Description</label>
           <input
             type="text"
             value={form.description}
             onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-            className="w-full bg-forge-black border border-forge-muted/20 rounded-lg px-3 py-2 text-white text-sm focus:border-orange-500 outline-none"
+            className="w-full bg-bg border border-muted/20 rounded-xl px-4 py-2.5 text-text text-sm focus:border-accent outline-none"
             placeholder="Optional short description"
           />
         </div>
       </div>
       <div>
-        <label className="block text-xs text-gray-500 mb-2 uppercase tracking-wider font-mono">Color</label>
+        <label className="block text-[10px] text-text-muted mb-3 uppercase tracking-widest font-black">Color</label>
         <div className="flex gap-2 flex-wrap">
           {PRESET_COLORS.map(c => (
             <button
               key={c}
               type="button"
               onClick={() => setForm(f => ({ ...f, color: c }))}
-              className={`w-7 h-7 rounded-full border-2 transition-transform hover:scale-110 ${form.color === c ? 'border-white scale-110' : 'border-transparent'}`}
+              className={`w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 ${form.color === c ? 'border-text scale-110' : 'border-transparent'}`}
               style={{ backgroundColor: c }}
             />
           ))}
@@ -83,17 +83,17 @@ function CategoryForm({ category, onSave, onCancel }) {
             type="color"
             value={form.color}
             onChange={e => setForm(f => ({ ...f, color: e.target.value }))}
-            className="w-7 h-7 rounded-full cursor-pointer border-2 border-forge-muted/30 bg-transparent"
+            className="w-8 h-8 rounded-full cursor-pointer border-2 border-muted/30 bg-transparent"
             title="Custom color"
           />
         </div>
       </div>
-      <div className="flex gap-2 pt-2">
-        <button type="submit" disabled={saving} className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-forge-black text-sm font-bold rounded-lg hover:bg-orange-400 disabled:opacity-50">
+      <div className="flex gap-3 pt-4 border-t border-muted/10">
+        <button type="submit" disabled={saving} className="flex items-center gap-2 px-6 py-2.5 bg-accent text-bg text-sm font-black rounded-xl hover:bg-accent/80 transition-all disabled:opacity-50">
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
           {category ? 'Update' : 'Create'} Category
         </button>
-        <button type="button" onClick={onCancel} className="px-4 py-2 text-gray-400 text-sm hover:text-white rounded-lg hover:bg-forge-muted/20">Cancel</button>
+        <button type="button" onClick={onCancel} className="px-6 py-2.5 text-text-muted text-sm font-medium hover:text-text rounded-xl hover:bg-muted/10 transition-colors">Cancel</button>
       </div>
     </motion.form>
   );
@@ -126,18 +126,18 @@ export default function DashboardCategories() {
     fetchCategories();
   };
 
-  if (loading) return <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 text-orange-500 animate-spin" /></div>;
+  if (loading) return <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 text-accent animate-spin" /></div>;
 
   return (
     <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-10">
         <div>
-          <h2 className="font-display text-2xl font-bold text-white">Categories</h2>
-          <p className="text-gray-400 text-sm mt-1">Organize your articles by research area, project, or event</p>
+          <h2 className="font-display text-3xl font-black text-text tracking-tight uppercase">Categories</h2>
+          <p className="text-text-muted text-sm mt-1">Organize your thought ecosystem</p>
         </div>
         <button
           onClick={() => { setShowForm(true); setEditingCategory(null); }}
-          className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-forge-black font-bold rounded-lg hover:bg-orange-400 transition-colors"
+          className="flex items-center gap-2 px-6 py-2.5 bg-accent text-bg font-black rounded-xl hover:bg-accent/80 transition-all shadow-lg shadow-accent/20 uppercase tracking-widest text-xs"
         >
           <Plus className="w-4 h-4" /> New Category
         </button>
@@ -157,32 +157,32 @@ export default function DashboardCategories() {
           <p>No categories yet. Create one to organize your writing.</p>
         </div>
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {categories.map(cat => (
             <motion.div
               key={cat.id}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-forge-surface border border-forge-muted/20 rounded-xl p-5 group hover:border-forge-muted/40 transition-colors"
+              className="bg-surface border border-muted/20 rounded-2xl p-6 group hover:border-accent/30 transition-all shadow-xl shadow-black/5"
             >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: cat.color || '#F97316' }} />
-                  <Hash className="w-4 h-4 text-gray-500" />
-                  <h3 className="font-display font-bold text-white">{cat.name}</h3>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 rounded-full shrink-0 shadow-sm" style={{ backgroundColor: cat.color || '#F97316' }} />
+                  <Hash className="w-4 h-4 text-accent/50 group-hover:text-accent transition-colors" />
+                  <h3 className="font-display font-black text-text text-lg uppercase tracking-tight">{cat.name}</h3>
                 </div>
                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button onClick={() => { setEditingCategory(cat); setShowForm(false); }} className="p-1.5 text-gray-400 hover:text-orange-500 transition-colors">
-                    <Edit className="w-3.5 h-3.5" />
+                  <button onClick={() => { setEditingCategory(cat); setShowForm(false); }} className="p-1.5 text-text-muted hover:text-accent hover:bg-accent/10 rounded-lg transition-all">
+                    <Edit className="w-4 h-4" />
                   </button>
-                  <button onClick={() => handleDelete(cat.id)} className="p-1.5 text-gray-400 hover:text-red-500 transition-colors">
-                    <Trash2 className="w-3.5 h-3.5" />
+                  <button onClick={() => handleDelete(cat.id)} className="p-1.5 text-text-muted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all">
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               </div>
-              {cat.description && <p className="text-sm text-gray-500 mb-3 line-clamp-2">{cat.description}</p>}
-              <div className="text-xs font-mono text-gray-600">
-                {cat['blog_posts']?.[0]?.count ?? 0} articles · /{cat.slug}
+              {cat.description && <p className="text-sm text-text-muted mb-4 line-clamp-2 leading-relaxed">{cat.description}</p>}
+              <div className="pt-4 border-t border-muted/5 text-[10px] font-black font-mono text-text-muted/60 uppercase tracking-widest flex items-center gap-2">
+                <span className="text-accent">{cat['blog_posts']?.[0]?.count ?? 0}</span> articles · /{cat.slug}
               </div>
             </motion.div>
           ))}

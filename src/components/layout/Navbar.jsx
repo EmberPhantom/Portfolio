@@ -45,7 +45,7 @@ export default function Navbar() {
               <svg width="24" height="24" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-text">
                 <rect x="8" y="4" width="6" height="32" rx="1" fill="currentColor"/>
                 <path d="M22 8C28.6274 8 34 13.3726 34 20C34 26.6274 28.6274 32 22 32" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
-                <circle cx="21" cy="20" r="3.5" fill="#F97316"/>
+                <circle cx="21" cy="20" r="3.5" className="fill-accent transition-colors duration-300" />
               </svg>
             </div>
             <span className="font-display font-bold text-xl text-text hidden lg:block tracking-tighter group-hover/logo:text-accent transition-colors">
@@ -76,7 +76,7 @@ export default function Navbar() {
                   {isActive && (
                     <motion.div
                       layoutId="activeNavIndicator"
-                      className="absolute left-0 w-1 h-1/2 bg-orange-500 rounded-r-md hidden lg:block"
+                      className="absolute left-0 w-1 h-1/2 bg-accent rounded-r-md hidden lg:block"
                     />
                   )}
                   <Icon

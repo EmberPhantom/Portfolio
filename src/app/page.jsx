@@ -79,7 +79,7 @@ function IntroWidget() {
           <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-text">
             <rect x="8" y="4" width="6" height="32" rx="1" fill="currentColor"/>
             <path d="M22 8C28.6274 8 34 13.3726 34 20C34 26.6274 28.6274 32 22 32" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
-            <circle cx="21" cy="20" r="3.5" fill="#F97316"/>
+            <circle cx="21" cy="20" r="3.5" className="fill-accent transition-colors duration-300" />
           </svg>
         </div>
         <h2 className="text-3xl md:text-5xl font-display font-bold text-text mb-4 tracking-tight leading-none">
@@ -178,7 +178,7 @@ function FeaturedProjectWidget() {
           </p>
           <div className="flex flex-wrap gap-2">
             {['Django', 'Next.js', 'PostgreSQL'].map(tech => (
-              <span key={tech} className="px-2.5 py-1 bg-black/50 border border-white/10 rounded-lg text-[10px] text-gray-300 font-mono tracking-widest uppercase backdrop-blur-md">
+              <span key={tech} className="px-2.5 py-1 bg-surface/50 border border-muted/20 rounded-lg text-[10px] text-text-muted font-mono tracking-widest uppercase backdrop-blur-md">
                 {tech}
               </span>
             ))}

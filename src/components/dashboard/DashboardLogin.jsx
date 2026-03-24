@@ -16,53 +16,53 @@ export default function DashboardLogin({ onLogin }) {
   }
 
   return (
-    <div className="min-h-screen bg-forge-black flex items-center justify-center p-4">
+    <div className="h-screen bg-bg flex items-center justify-center p-4 overflow-hidden">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"
       >
-        <div className="bg-forge-surface p-8 rounded-2xl border border-forge-muted/20">
-          <div className="flex justify-center mb-6">
-            <div className="p-4 bg-orange-500/10 rounded-full">
-              <Lock className="w-8 h-8 text-orange-500" />
+        <div className="bg-surface p-8 rounded-3xl border border-muted/20 shadow-2xl shadow-black/20">
+          <div className="flex justify-center mb-8">
+            <div className="p-4 bg-accent/10 rounded-2xl border border-accent/20">
+              <Lock className="w-8 h-8 text-accent" />
             </div>
           </div>
 
-          <h1 className="font-display text-2xl font-bold text-white text-center mb-2">
-            Dashboard Access
+          <h1 className="font-display text-2xl font-bold text-text text-center mb-2">
+            System Access
           </h1>
-          <p className="text-gray-400 text-center mb-8">
-            Enter your password to continue
+          <p className="text-text-muted text-center mb-10 text-sm tracking-wide">
+            ENTER AUTHENTICATION KEY TO CONTINUE
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => { setPassword(e.target.value); setError('') }}
-                placeholder="Enter password"
-                className="w-full px-4 py-3 bg-forge-black rounded-lg text-white placeholder-gray-500 border border-forge-muted/20 focus:border-orange-500 focus:outline-none pr-12"
+                placeholder="Authentication key"
+                className="w-full px-5 py-4 bg-bg rounded-xl text-text placeholder-text-muted/30 border border-muted/20 focus:border-accent focus:outline-none pr-14 transition-all"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-accent transition-colors"
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
 
             {error && (
-              <p className="text-red-500 text-sm text-center">{error}</p>
+              <p className="text-red-500 text-sm text-center font-mono">{error}</p>
             )}
 
             <button
               type="submit"
-              className="w-full py-3 bg-orange-500 text-forge-black font-semibold rounded-lg hover:bg-orange-400 transition-colors"
+              className="w-full py-4 bg-accent text-bg font-black rounded-xl hover:bg-accent/80 transition-all shadow-lg shadow-accent/20 uppercase tracking-widest text-sm"
             >
-              Login
+              INITIALIZE SESSION
             </button>
           </form>
         </div>

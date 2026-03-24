@@ -11,8 +11,8 @@ import dynamic from 'next/dynamic';
 const RichBlogEditor = dynamic(() => import('../editor/RichBlogEditor'), { 
   ssr: false,
   loading: () => (
-    <div className="flex items-center justify-center h-64 bg-[#0c0c0c] rounded-xl border border-forge-muted/20 animate-pulse">
-      <div className="text-gray-600 font-mono text-sm">Loading editor...</div>
+    <div className="flex items-center justify-center h-64 bg-bg rounded-xl border border-muted/20 animate-pulse">
+      <div className="text-text-muted font-mono text-sm uppercase tracking-widest">Initialising Core Editor...</div>
     </div>
   )
 });
@@ -134,20 +134,23 @@ export default function BlogEditor({ post, onSave, onCancel }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col gap-4 w-full"
+      className="flex flex-col gap-6 w-full"
     >
       {/* Header Bar */}
-      <div className="flex items-center justify-between">
-        <h3 className="font-display text-xl font-bold text-white">{post ? 'Edit Article' : 'New Article'}</h3>
-        <div className="flex gap-2">
-          <button type="button" onClick={onCancel} className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-400 hover:text-white rounded-lg hover:bg-forge-muted/20 transition-colors">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h3 className="font-display text-2xl font-bold text-text">{post ? 'Edit Article' : 'New Article'}</h3>
+          <p className="text-text-muted text-sm">Drafting your next thought</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button type="button" onClick={onCancel} className="flex items-center gap-2 px-4 py-2 text-sm text-text-muted hover:text-text rounded-xl hover:bg-muted/10 transition-all">
             <X className="w-4 h-4" /> Cancel
           </button>
           <button
             type="button"
             onClick={() => handleSubmit(null, false)}
             disabled={saving}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-forge-muted/20 text-gray-300 rounded-lg hover:bg-forge-muted/40 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-sm bg-muted/10 text-text/80 rounded-xl hover:bg-muted/20 border border-muted/20 transition-all font-medium"
           >
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />} Save Draft
           </button>
@@ -155,7 +158,7 @@ export default function BlogEditor({ post, onSave, onCancel }) {
             type="button"
             onClick={() => handleSubmit(null, true)}
             disabled={saving}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-orange-500 text-forge-black font-bold rounded-lg hover:bg-orange-400 transition-colors"
+            className="flex items-center gap-2 px-6 py-2 text-sm bg-accent text-bg font-black rounded-xl hover:bg-accent/80 transition-all shadow-lg shadow-accent/20"
           >
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Globe className="w-4 h-4" />} Publish
           </button>
@@ -163,106 +166,109 @@ export default function BlogEditor({ post, onSave, onCancel }) {
       </div>
 
       {saveMsg && (
-        <div className={`px-4 py-2 rounded-lg text-sm ${saveMsg.includes('failed') ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-green-500/10 text-green-400 border border-green-500/20'}`}>
+        <div className={`px-4 py-3 rounded-xl text-sm font-medium ${saveMsg.includes('failed') ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 'bg-green-500/10 text-green-500 border border-green-500/20'}`}>
           {saveMsg}
         </div>
       )}
 
       {/* Cover Image */}
       {meta.cover_image && (
-        <div className="relative w-full h-48 rounded-xl overflow-hidden border border-forge-muted/20">
+        <div className="relative w-full h-64 rounded-2xl overflow-hidden border border-muted/20 shadow-lg">
           <img src={meta.cover_image} alt="Cover" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         </div>
       )}
 
-      {/* Title */}
-      <input
-        type="text"
-        name="title"
-        value={meta.title}
-        onChange={handleMetaChange}
-        placeholder="Article title..."
-        required
-        className="w-full text-3xl font-display font-bold text-white bg-transparent outline-none border-b border-forge-muted/20 focus:border-orange-500 pb-3 transition-colors placeholder:text-gray-700"
-      />
+      {/* Main Form Area */}
+      <div className="bg-surface p-6 rounded-3xl border border-muted/20 space-y-6">
+        <input
+          type="text"
+          name="title"
+          value={meta.title}
+          onChange={handleMetaChange}
+          placeholder="Article title..."
+          required
+          className="w-full text-4xl font-display font-black text-text bg-transparent outline-none border-b border-muted/10 focus:border-accent pb-4 transition-all placeholder:text-muted/20"
+        />
 
-      {/* Quick Meta Row */}
-      <div className="flex flex-wrap gap-3 items-center">
-        {/* Category */}
-        <div className="relative flex items-center gap-1.5 bg-forge-muted/10 border border-forge-muted/20 rounded-lg px-3 py-1.5">
-          <Folder className="w-3.5 h-3.5 text-gray-500" />
-          <select
-            name="category_id"
-            value={meta.category_id}
-            onChange={handleMetaChange}
-            className="bg-transparent text-sm text-gray-300 outline-none pr-4 cursor-pointer"
-          >
-            <option value="">No Category</option>
-            {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </select>
+        {/* Meta Row */}
+        <div className="flex flex-wrap gap-4 items-center">
+          {/* Category */}
+          <div className="flex items-center gap-2 bg-bg/50 border border-muted/20 rounded-xl px-4 py-2">
+            <Folder className="w-4 h-4 text-accent" />
+            <select
+              name="category_id"
+              value={meta.category_id}
+              onChange={handleMetaChange}
+              className="bg-transparent text-sm text-text font-medium outline-none pr-4 cursor-pointer"
+            >
+              <option value="">No Category</option>
+              {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+          </div>
+
+          {/* Schedule */}
+          <div className="flex items-center gap-2 bg-bg/50 border border-muted/20 rounded-xl px-4 py-2">
+            <Clock className="w-4 h-4 text-accent" />
+            <input
+              type="datetime-local"
+              name="scheduled_at"
+              value={meta.scheduled_at}
+              onChange={handleMetaChange}
+              className="bg-transparent text-sm text-text font-medium outline-none cursor-pointer"
+              title="Schedule publish time"
+            />
+          </div>
+
+          {/* Tags */}
+          <div className="flex flex-wrap items-center gap-2 flex-1 bg-bg/50 border border-muted/20 rounded-xl px-4 py-2 min-w-[280px]">
+            <Tag className="w-4 h-4 text-accent shrink-0" />
+            {meta.tags.map(tag => (
+              <span key={tag} className="flex items-center gap-1.5 px-2.5 py-1 bg-accent/10 border border-accent/20 rounded-full text-xs font-bold text-accent">
+                {tag}
+                <button type="button" onClick={() => setMeta(prev => ({ ...prev, tags: prev.tags.filter(t => t !== tag) }))}>
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            ))}
+            <input
+              type="text"
+              value={tagInput}
+              onChange={e => setTagInput(e.target.value)}
+              onKeyDown={handleAddTag}
+              placeholder="+ tag"
+              className="bg-transparent text-sm text-text outline-none min-w-[80px] flex-1"
+            />
+          </div>
         </div>
 
-        {/* Schedule */}
-        <div className="flex items-center gap-1.5 bg-forge-muted/10 border border-forge-muted/20 rounded-lg px-3 py-1.5">
-          <Clock className="w-3.5 h-3.5 text-gray-500" />
-          <input
-            type="datetime-local"
-            name="scheduled_at"
-            value={meta.scheduled_at}
-            onChange={handleMetaChange}
-            className="bg-transparent text-sm text-gray-300 outline-none cursor-pointer"
-            title="Schedule publish time (optional)"
-          />
-        </div>
+        {/* Advanced Toggle */}
+        <button
+          type="button"
+          onClick={() => setShowAdvanced(!showAdvanced)}
+          className="flex items-center gap-2 text-xs font-bold text-text-muted hover:text-accent uppercase tracking-widest transition-colors"
+        >
+          <ChevronDown className={`w-4 h-4 transition-transform ${showAdvanced ? 'rotate-180' : ''}`} />
+          {showAdvanced ? 'Hide Details' : 'Advanced Details'}
+        </button>
 
-        {/* Tags */}
-        <div className="flex flex-wrap items-center gap-1.5 flex-1 bg-forge-muted/10 border border-forge-muted/20 rounded-lg px-3 py-1.5 min-w-48">
-          <Tag className="w-3.5 h-3.5 text-gray-500 shrink-0" />
-          {meta.tags.map(tag => (
-            <span key={tag} className="flex items-center gap-1 px-2 py-0.5 bg-forge-black/60 border border-forge-muted/30 rounded-full text-xs text-gray-300">
-              {tag}
-              <button type="button" onClick={() => setMeta(prev => ({ ...prev, tags: prev.tags.filter(t => t !== tag) }))}>
-                <X className="w-3 h-3" />
-              </button>
-            </span>
-          ))}
-          <input
-            type="text"
-            value={tagInput}
-            onChange={e => setTagInput(e.target.value)}
-            onKeyDown={handleAddTag}
-            placeholder="Add tag + Enter"
-            className="bg-transparent text-xs text-gray-300 outline-none min-w-20 flex-1"
-          />
-        </div>
+        {showAdvanced && (
+          <div className="grid sm:grid-cols-2 gap-6 p-6 bg-bg/40 border border-muted/10 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="sm:col-span-2">
+              <label className="block text-[10px] text-text-muted mb-2 font-black uppercase tracking-[0.2em]">Cover Image URL</label>
+              <input type="url" name="cover_image" value={meta.cover_image} onChange={handleMetaChange} placeholder="https://..." className="w-full bg-surface border border-muted/20 rounded-xl px-4 py-3 text-sm text-text focus:border-accent outline-none transition-all" />
+            </div>
+            <div>
+              <label className="block text-[10px] text-text-muted mb-2 font-black uppercase tracking-[0.2em]">Custom Slug</label>
+              <input type="text" name="slug" value={meta.slug} onChange={handleMetaChange} required className="w-full bg-surface border border-muted/20 rounded-xl px-4 py-3 text-sm font-mono text-text focus:border-accent outline-none transition-all" />
+            </div>
+            <div>
+              <label className="block text-[10px] text-text-muted mb-2 font-black uppercase tracking-[0.2em]">Excerpt (Meta Description)</label>
+              <textarea name="excerpt" value={meta.excerpt} onChange={handleMetaChange} rows={2} className="w-full bg-surface border border-muted/20 rounded-xl px-4 py-3 text-sm text-text focus:border-accent outline-none resize-none transition-all" />
+            </div>
+          </div>
+        )}
       </div>
-
-      {/* Advanced Options */}
-      <button
-        type="button"
-        onClick={() => setShowAdvanced(!showAdvanced)}
-        className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-300 w-fit transition-colors"
-      >
-        <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showAdvanced ? 'rotate-180' : ''}`} />
-        {showAdvanced ? 'Hide' : 'Show'} advanced options (slug, excerpt, cover image)
-      </button>
-
-      {showAdvanced && (
-        <div className="grid sm:grid-cols-2 gap-3 p-4 bg-forge-muted/5 border border-forge-muted/20 rounded-xl">
-          <div className="sm:col-span-2">
-            <label className="block text-xs text-gray-500 mb-1 font-mono uppercase tracking-wider">Cover Image URL</label>
-            <input type="url" name="cover_image" value={meta.cover_image} onChange={handleMetaChange} placeholder="https://..." className="w-full bg-forge-black/60 border border-forge-muted/20 rounded-lg px-3 py-2 text-sm text-white focus:border-orange-500 outline-none" />
-          </div>
-          <div>
-            <label className="block text-xs text-gray-500 mb-1 font-mono uppercase tracking-wider">Slug</label>
-            <input type="text" name="slug" value={meta.slug} onChange={handleMetaChange} required className="w-full bg-forge-black/60 border border-forge-muted/20 rounded-lg px-3 py-2 text-sm text-white focus:border-orange-500 outline-none" />
-          </div>
-          <div>
-            <label className="block text-xs text-gray-500 mb-1 font-mono uppercase tracking-wider">Excerpt</label>
-            <textarea name="excerpt" value={meta.excerpt} onChange={handleMetaChange} rows={2} className="w-full bg-forge-black/60 border border-forge-muted/20 rounded-lg px-3 py-2 text-sm text-white focus:border-orange-500 outline-none resize-none" />
-          </div>
-        </div>
-      )}
 
       {/* The Editor */}
       <RichBlogEditor

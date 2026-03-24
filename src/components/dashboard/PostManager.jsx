@@ -72,12 +72,12 @@ export default function PostManager() {
     <div>
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h2 className="font-display text-2xl font-bold text-white">Blog Posts</h2>
-          <p className="text-gray-400">Manage your blog posts</p>
+          <h2 className="font-display text-2xl font-bold text-text">Blog Posts</h2>
+          <p className="text-text-muted">Manage your articles and drafts</p>
         </div>
         <button
           onClick={() => { setIsCreating(true); setEditingPost(null) }}
-          className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-forge-black font-medium rounded-lg hover:bg-orange-400 transition-colors"
+          className="flex items-center gap-2 px-6 py-2.5 bg-accent text-bg font-bold rounded-xl hover:bg-accent/80 transition-all shadow-lg shadow-accent/20"
         >
           <Plus className="w-4 h-4" />
           New Post
@@ -92,21 +92,21 @@ export default function PostManager() {
         />
       )}
 
-      <div className="bg-forge-surface rounded-xl border border-forge-muted/20 overflow-hidden">
+      <div className="bg-surface rounded-2xl border border-muted/20 overflow-hidden shadow-xl shadow-black/5">
         <table className="w-full">
-          <thead className="border-b border-forge-muted/20">
-            <tr className="text-left text-gray-400 text-sm">
-              <th className="p-4 font-medium">Title</th>
-              <th className="p-4 font-medium">Status</th>
-              <th className="p-4 font-medium">Views</th>
-              <th className="p-4 font-medium">Date</th>
-              <th className="p-4 font-medium text-right">Actions</th>
+          <thead>
+            <tr className="text-left text-text-muted text-xs uppercase tracking-widest border-b border-muted/10">
+              <th className="p-5 font-semibold">Title</th>
+              <th className="p-5 font-semibold">Status</th>
+              <th className="p-5 font-semibold">Views</th>
+              <th className="p-5 font-semibold">Date</th>
+              <th className="p-5 font-semibold text-right">Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-muted/5">
             {posts.length === 0 ? (
               <tr>
-                <td colSpan={5} className="p-8 text-center text-gray-500">
+                <td colSpan={5} className="p-12 text-center text-text-muted/50 font-mono text-sm italic">
                   No posts yet. Create your first post!
                 </td>
               </tr>
@@ -115,43 +115,45 @@ export default function PostManager() {
                 key={post.id}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="border-b border-forge-muted/10 hover:bg-forge-black/50"
+                className="hover:bg-bg/40 transition-colors group"
               >
-                <td className="p-4">
-                  <span className="text-white font-medium">{post.title}</span>
+                <td className="p-5">
+                  <span className="text-text font-medium group-hover:text-accent transition-colors">{post.title}</span>
                 </td>
-                <td className="p-4">
+                <td className="p-5">
                   <button
                     onClick={() => handleTogglePublish(post)}
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
                       post.published
-                        ? 'bg-green-500/20 text-green-500'
-                        : 'bg-gray-500/20 text-gray-500'
+                        ? 'bg-green-500/10 text-green-500 border border-green-500/20'
+                        : 'bg-muted/10 text-text-muted border border-muted/20'
                     }`}
                   >
                     {post.published ? 'Published' : 'Draft'}
                   </button>
                 </td>
-                <td className="p-4 text-gray-400">
-                  <div className="flex items-center gap-1">
-                    <Eye className="w-4 h-4" />
+                <td className="p-5 text-text-muted">
+                  <div className="flex items-center gap-1.5 font-mono text-sm">
+                    <Eye className="w-4 h-4 text-accent/60" />
                     {post.views || 0}
                   </div>
                 </td>
-                <td className="p-4 text-gray-400">
+                <td className="p-5 text-text-muted font-mono text-sm">
                   {formatDate(post.created_at)}
                 </td>
-                <td className="p-4">
-                  <div className="flex justify-end gap-2">
+                <td className="p-5">
+                  <div className="flex justify-end gap-3">
                     <button
                       onClick={() => { setEditingPost(post); setIsCreating(false) }}
-                      className="p-2 text-gray-400 hover:text-orange-500 transition-colors"
+                      className="p-2 text-text-muted hover:text-accent hover:bg-accent/10 rounded-lg transition-all"
+                      title="Edit Post"
                     >
                       <Edit className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDelete(post.id)}
-                      className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                      className="p-2 text-text-muted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+                      title="Delete Post"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>

@@ -7,12 +7,12 @@ import { supabase } from '../../../lib/supabase';
 
 function Section({ title, icon: Icon, children }) {
   return (
-    <div className="bg-forge-surface border border-forge-muted/20 rounded-2xl p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 bg-orange-500/10 rounded-lg">
-          <Icon className="w-5 h-5 text-orange-500" />
+    <div className="bg-surface border border-muted/20 rounded-3xl p-8 shadow-xl shadow-black/10">
+      <div className="flex items-center gap-4 mb-8">
+        <div className="p-3 bg-accent/10 border border-accent/20 rounded-2xl">
+          <Icon className="w-6 h-6 text-accent" />
         </div>
-        <h3 className="font-display text-lg font-bold text-white">{title}</h3>
+        <h3 className="font-display text-xl font-black text-text tracking-tight uppercase">{title}</h3>
       </div>
       {children}
     </div>
@@ -43,18 +43,18 @@ function PasswordReset() {
 
   return (
     <Section title="Password Reset" icon={KeyRound}>
-      <p className="text-sm text-gray-400 mb-4">Send a password reset link to your email address.</p>
-      <form onSubmit={handleReset} className="flex gap-3">
+      <p className="text-sm text-text-muted mb-6 leading-relaxed">Securely send a cryptographic reset link to your authorized administrative email address.</p>
+      <form onSubmit={handleReset} className="flex flex-col sm:flex-row gap-4">
         <input
           type="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
-          placeholder="your@email.com"
+          placeholder="admin@emberos.id"
           required
-          className="flex-1 bg-forge-black border border-forge-muted/20 rounded-lg px-4 py-2 text-white text-sm focus:border-orange-500 outline-none"
+          className="flex-1 bg-bg border border-muted/20 rounded-xl px-5 py-3 text-text text-sm focus:border-accent outline-none transition-all"
         />
-        <button type="submit" disabled={loading} className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-forge-black text-sm font-bold rounded-lg hover:bg-orange-400 disabled:opacity-50 transition-colors">
-          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <KeyRound className="w-4 h-4" />} Send Link
+        <button type="submit" disabled={loading} className="flex items-center justify-center gap-2 px-8 py-3 bg-accent text-bg text-sm font-black rounded-xl hover:bg-accent/80 disabled:opacity-50 transition-all uppercase tracking-widest">
+          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <KeyRound className="w-4 h-4" />} Send Key
         </button>
       </form>
       {msg && <p className={`mt-3 text-sm ${msg.startsWith('✓') ? 'text-green-400' : 'text-red-400'}`}>{msg}</p>}
@@ -96,41 +96,49 @@ function AIContextEditor() {
     setRows(prev => prev.filter(r => r.key !== key));
   };
 
-  if (loading) return <Section title="AI Memory" icon={Brain}><Loader2 className="w-5 h-5 animate-spin text-orange-500" /></Section>;
+  if (loading) return <Section title="AI Memory" icon={Brain}><div className="flex justify-center py-6"><Loader2 className="w-6 h-6 animate-spin text-accent" /></div></Section>;
 
   return (
     <Section title="AI Memory Context" icon={Brain}>
-      <p className="text-sm text-gray-400 mb-4">These key-value pairs are injected into every AI interaction — keeping your assistants accurate and personalized.</p>
-      <div className="space-y-3">
+      <p className="text-sm text-text-muted mb-8 leading-relaxed">These semantic markers are injected into Every AI interaction to maintain technical accuracy and personality persistence.</p>
+      <div className="space-y-4">
         {rows.map((row, i) => (
-          <div key={row.key} className="flex gap-2 items-start">
+          <div key={row.key} className="flex flex-col sm:flex-row gap-3 items-start group">
             <input
               type="text"
               value={row.key}
               onChange={e => setRows(prev => prev.map((r, idx) => idx === i ? { ...r, key: e.target.value } : r))}
-              className="w-1/3 bg-forge-black border border-forge-muted/20 rounded-lg px-3 py-2 text-orange-500 font-mono text-xs focus:border-orange-500 outline-none"
-              placeholder="key"
+              className="w-full sm:w-1/3 bg-bg border border-muted/20 rounded-xl px-4 py-2.5 text-accent font-mono text-[10px] font-black uppercase tracking-widest focus:border-accent outline-none"
+              placeholder="CONTEXT_KEY"
             />
             <textarea
               value={row.value}
               onChange={e => setRows(prev => prev.map((r, idx) => idx === i ? { ...r, value: e.target.value } : r))}
               rows={2}
-              className="flex-1 bg-forge-black border border-forge-muted/20 rounded-lg px-3 py-2 text-gray-300 text-sm focus:border-orange-500 outline-none resize-none"
-              placeholder="value..."
+              className="flex-1 w-full bg-bg border border-muted/20 rounded-xl px-4 py-2.5 text-text/90 text-sm focus:border-accent outline-none resize-none transition-all"
+              placeholder="Context value logic..."
             />
-            <div className="flex flex-col gap-1">
-              <button onClick={() => handleSaveRow(row)} className="p-2 bg-orange-500/10 text-orange-500 rounded-lg hover:bg-orange-500/20 transition-colors" title="Save">
-                {saving === row.key ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : saved === row.key ? <CheckCircle className="w-3.5 h-3.5 text-green-500" /> : <Save className="w-3.5 h-3.5" />}
+            <div className="flex sm:flex-col gap-2 w-full sm:w-auto self-stretch">
+              <button 
+                onClick={() => handleSaveRow(row)} 
+                className="flex-1 sm:flex-none p-3 bg-accent/10 text-accent border border-accent/20 rounded-xl hover:bg-accent/20 transition-all shadow-sm"
+                title="Save Context"
+              >
+                {saving === row.key ? <Loader2 className="w-4 h-4 animate-spin" /> : saved === row.key ? <CheckCircle className="w-4 h-4 text-green-500" /> : <Save className="w-4 h-4" />}
               </button>
-              <button onClick={() => handleDeleteRow(row.key)} className="p-2 text-gray-600 hover:text-red-500 rounded-lg hover:bg-red-500/10 transition-colors" title="Delete">
-                <Trash2 className="w-3.5 h-3.5" />
+              <button 
+                onClick={() => handleDeleteRow(row.key)} 
+                className="flex-1 sm:flex-none p-3 text-text-muted/40 hover:text-red-500 hover:bg-red-500/10 border border-muted/10 hover:border-red-500/20 rounded-xl transition-all"
+                title="Delete Context"
+              >
+                <Trash2 className="w-4 h-4" />
               </button>
             </div>
           </div>
         ))}
       </div>
-      <button onClick={handleAddRow} className="mt-4 flex items-center gap-2 text-sm text-gray-400 hover:text-orange-500 transition-colors">
-        <Plus className="w-4 h-4" /> Add context entry
+      <button onClick={handleAddRow} className="mt-8 flex items-center gap-2 text-xs font-black text-text-muted hover:text-accent uppercase tracking-[0.2em] transition-all">
+        <Plus className="w-4 h-4" /> Add custom record
       </button>
     </Section>
   );
@@ -160,21 +168,24 @@ function GooglePhotosSetup() {
   };
 
   return (
-    <Section title="Google Photos Integration" icon={Camera}>
-      <p className="text-sm text-gray-400 mb-4">
-        Connect your Google Photos library to insert images directly into blog posts with the photo picker, without uploading to a separate storage.
+    <Section title="Asset Cloud (Google)" icon={Camera}>
+      <p className="text-sm text-text-muted mb-8 leading-relaxed">
+        Sync your Google Photos library to source high-resolution assets directly into your publications without intermediate staging.
       </p>
-      <div className="flex items-center justify-between p-4 bg-forge-black rounded-xl border border-forge-muted/20">
-        <div className="flex items-center gap-3">
-          <div className={`w-3 h-3 rounded-full ${connected ? 'bg-green-500' : 'bg-gray-600'}`} />
-          <span className="text-sm text-gray-300 font-mono">{connected ? 'Google Photos Connected' : 'Not Connected'}</span>
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-6 p-6 bg-bg/50 rounded-2xl border border-muted/20">
+        <div className="flex items-center gap-4">
+          <div className={`w-4 h-4 rounded-full shadow-lg ${connected ? 'bg-green-500 animate-pulse' : 'bg-text-muted/30'}`} />
+          <div className="flex flex-col">
+            <span className="text-sm text-text font-black uppercase tracking-tight">{connected ? 'Cloud Verified' : 'Connection Required'}</span>
+            <span className="text-[10px] text-text-muted font-mono">{connected ? 'GOOGLE_PHOTOS_ACTIVE' : 'READY_FOR_AUTH'}</span>
+          </div>
         </div>
-        {loading ? <Loader2 className="w-4 h-4 animate-spin text-orange-500" /> : (
+        {loading ? <Loader2 className="w-6 h-6 animate-spin text-accent" /> : (
           connected ? (
-            <button onClick={handleDisconnect} className="text-sm text-red-400 hover:text-red-300 font-mono">Disconnect</button>
+            <button onClick={handleDisconnect} className="text-xs text-red-500 hover:text-red-400 font-black uppercase tracking-widest transition-all">Revoke Terminal Access</button>
           ) : (
-            <button onClick={handleConnect} className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-500 transition-colors">
-              <ExternalLink className="w-4 h-4" /> Connect with Google
+            <button onClick={handleConnect} className="flex items-center gap-3 px-6 py-3 bg-blue-600 text-white text-xs font-black rounded-xl hover:bg-blue-500 transition-all uppercase tracking-widest shadow-xl shadow-blue-600/20">
+              <ExternalLink className="w-4 h-4" /> Authorize Google Key
             </button>
           )
         )}
@@ -191,14 +202,15 @@ function GooglePhotosSetup() {
 // ── Main Settings Page ─────────────────────────────────
 export default function DashboardSettings() {
   return (
-    <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-2xl">
-      <div className="mb-8">
-        <h2 className="font-display text-2xl font-bold text-white flex items-center gap-2">
-          <Settings className="w-6 h-6 text-orange-500" /> Settings
-        </h2>
-        <p className="text-gray-400 text-sm mt-1">Manage authentication, AI memory, and integrations</p>
+    <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-3xl">
+      <div className="mb-12">
+        <div className="flex items-center gap-4 mb-2">
+          <Settings className="w-8 h-8 text-accent animate-[spin_4s_linear_infinite]" />
+          <h2 className="font-display text-4xl font-black text-text uppercase tracking-tighter">System Settings</h2>
+        </div>
+        <p className="text-text-muted text-sm tracking-wide uppercase">Core configuration and intelligence memory</p>
       </div>
-      <div className="space-y-6">
+      <div className="space-y-8">
         <PasswordReset />
         <AIContextEditor />
         <GooglePhotosSetup />

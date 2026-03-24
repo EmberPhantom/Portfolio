@@ -43,10 +43,15 @@ export default function DashboardLayout({ children }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-forge-black flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-8 h-8 border-2 border-forge-muted border-t-orange-500 rounded-full animate-spin" />
-          <span className="text-orange-500 font-mono text-sm tracking-widest uppercase">
+      <div className="h-screen bg-bg flex items-center justify-center">
+        <div className="flex flex-col items-center gap-6">
+          <div className="relative">
+            <div className="w-16 h-16 border-2 border-muted/20 border-t-accent rounded-full animate-spin" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
+            </div>
+          </div>
+          <span className="text-accent font-mono text-xs tracking-[0.3em] uppercase">
             Initializing Core...
           </span>
         </div>
@@ -57,7 +62,7 @@ export default function DashboardLayout({ children }) {
   // On the login page, just render children without the sidebar layout
   if (pathname === "/dashboard/login") {
     return (
-      <div className="min-h-screen bg-forge-black w-full relative">
+      <div className="h-screen bg-bg w-full relative overflow-hidden">
         {children}
       </div>
     );
@@ -72,22 +77,29 @@ export default function DashboardLayout({ children }) {
   ];
 
   return (
-    <div className="min-h-screen bg-forge-black text-white flex flex-col md:flex-row relative overflow-hidden">
+    <div className="h-screen bg-bg text-text flex flex-col md:flex-row relative overflow-hidden">
       {/* Sidebar */}
-      <aside className="w-full md:w-64 bg-forge-surface border-r border-forge-muted/20 flex flex-col shrink-0">
-        <div className="p-6 border-b border-forge-muted/20">
+      <aside className="w-full md:w-64 bg-surface border-r border-muted/20 flex flex-col shrink-0">
+        <div className="p-6 border-b border-muted/20">
           <Link
             href="/"
-            className="text-orange-500 text-sm font-mono tracking-widest hover:text-orange-400 transition-colors"
+            className="text-accent text-xs font-mono tracking-widest hover:text-accent/80 transition-colors flex items-center gap-2"
           >
-            ← Exit to App
+            ← EXIT TO APP
           </Link>
-          <h1 className="text-2xl font-bold font-display text-white mt-4">
-            EmberOS Admin
-          </h1>
+          <div className="mt-6 flex items-center gap-3">
+            <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+              <rect x="10" y="6" width="5" height="28" rx="1" fill="currentColor" className="text-text"/>
+              <path d="M22 10C27.5228 10 32 14.4772 32 20C32 25.5228 27.5228 30 22 30" stroke="currentColor" stroke-width="5" stroke-linecap="round" className="text-text"/>
+              <circle cx="21" cy="20" r="3" fill="currentColor" className="text-accent"/>
+            </svg>
+            <h1 className="text-xl font-bold font-display text-text leading-tight">
+              EmberOS<br/>Admin
+            </h1>
+          </div>
         </div>
 
-        <nav className="flex-1 p-4 flex flex-col gap-2">
+        <nav className="flex-1 p-4 flex flex-col gap-1.5 overflow-y-auto">
           {navItems.map((item) => {
             const isActive = pathname === item.path;
             const Icon = item.icon;
@@ -95,23 +107,23 @@ export default function DashboardLayout({ children }) {
               <Link
                 key={item.label}
                 href={item.path}
-                className={`flex items-center gap-3 p-3 rounded-xl transition-colors ${
+                className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-300 ${
                   isActive
-                    ? "bg-orange-500/10 text-orange-500"
-                    : "hover:bg-forge-muted/20 text-gray-400 hover:text-white"
+                    ? "bg-accent/10 text-accent border border-accent/20"
+                    : "hover:bg-muted/10 text-text-muted hover:text-text"
                 }`}
               >
-                <Icon className="w-5 h-5" />
+                <Icon className={`w-5 h-5 ${isActive ? "text-accent" : "text-text-muted"}`} />
                 <span className="font-medium text-sm">{item.label}</span>
               </Link>
             );
           })}
         </nav>
 
-        <div className="p-4 border-t border-forge-muted/20">
+        <div className="p-4 border-t border-muted/20">
           <button
             onClick={handleSignOut}
-            className="flex items-center gap-3 p-3 w-full rounded-xl text-gray-400 hover:bg-red-500/10 hover:text-red-500 transition-colors"
+            className="flex items-center gap-3 p-3 w-full rounded-xl text-text-muted hover:bg-red-500/10 hover:text-red-500 transition-colors"
             aria-label="Sign Out"
           >
             <LogOut className="w-5 h-5" />
@@ -121,16 +133,16 @@ export default function DashboardLayout({ children }) {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto p-6 md:p-12 relative bg-forge-black">
+      <main className="flex-1 overflow-y-auto p-6 md:p-12 relative bg-bg/50 scroll-smooth">
         {!supabase && (
-          <div className="mb-8 p-4 bg-orange-500/10 border border-orange-500/30 text-orange-500 rounded-xl text-sm flex items-start gap-3">
+          <div className="mb-8 p-4 bg-accent/10 border border-accent/30 text-accent rounded-xl text-sm flex items-start gap-3">
             <span className="text-xl shrink-0">⚠️</span>
             <div>
               <p className="font-bold">Database Disconnected</p>
-              <p className="text-orange-400/70">
-                Add <code className="bg-black/30 px-1 rounded">NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
-                <code className="bg-black/30 px-1 rounded">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> to{" "}
-                <code className="bg-black/30 px-1 rounded">.env.local</code> to enable live data.
+              <p className="text-accent/70">
+                Add <code className="bg-bg/50 px-1 rounded">NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
+                <code className="bg-bg/50 px-1 rounded">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> to{" "}
+                <code className="bg-muted/10 px-1 rounded">.env.local</code> to enable live data.
               </p>
             </div>
           </div>
@@ -143,7 +155,7 @@ export default function DashboardLayout({ children }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="w-full"
+            className="w-full max-w-6xl mx-auto"
           >
             {children}
           </motion.div>

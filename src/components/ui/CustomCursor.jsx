@@ -3,75 +3,45 @@ import { motion } from 'framer-motion';
 
 export default function CustomCursor() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     const updateMousePosition = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
 
-    const handleMouseOver = (e) => {
-      // Check if we are hovering over interactive elements
-      if (
-        e.target.tagName === 'A' ||
-        e.target.tagName === 'BUTTON' ||
-        e.target.closest('a') !== null ||
-        e.target.closest('button') !== null ||
-        e.target.classList.contains('interactive')
-      ) {
-        setIsHovered(true);
-      } else {
-        setIsHovered(false);
-      }
-    };
-
     window.addEventListener('mousemove', updateMousePosition);
-    window.addEventListener('mouseover', handleMouseOver);
-
-    return () => {
-      window.removeEventListener('mousemove', updateMousePosition);
-      window.removeEventListener('mouseover', handleMouseOver);
-    };
+    return () => window.removeEventListener('mousemove', updateMousePosition);
   }, []);
 
-  const variants = {
-    default: {
-      x: mousePosition.x - 16,
-      y: mousePosition.y - 16,
-      scale: 1,
-      opacity: 0.5,
-      transition: { type: 'spring', stiffness: 500, damping: 28, mass: 0.5 },
-    },
-    hover: {
-      x: mousePosition.x - 32,
-      y: mousePosition.y - 32,
-      scale: 1.5,
-      opacity: 0.8,
-      backgroundColor: 'rgba(0,0,0,0)',
-      borderWidth: '2px',
-      borderStyle: 'solid',
-      borderColor: '#F97316',
-      transition: { type: 'spring', stiffness: 500, damping: 28, mass: 0.5 },
-    },
-  };
-
   return (
-    <>
-      {/* Outer circle that lags slightly */}
-      <motion.div
-        className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-[9999] mix-blend-difference"
-        style={{ backgroundColor: '#F97316' }}
-        variants={variants}
-        animate={isHovered ? 'hover' : 'default'}
-      />
-      {/* Small dot fixed to the cursor exactly */}
-      <motion.div
-        className="fixed top-0 left-0 w-2 h-2 rounded-full pointer-events-none z-[10000] bg-white mix-blend-difference"
-        style={{
-          x: mousePosition.x - 4,
-          y: mousePosition.y - 4,
-        }}
-      />
-    </>
+    <motion.div
+      className="fixed top-0 left-0 pointer-events-none z-[9999] w-6 h-6"
+      animate={{
+        x: mousePosition.x,
+        y: mousePosition.y,
+      }}
+      transition={{
+        type: "tween",
+        ease: "linear",
+        duration: 0
+      }}
+    >
+      <svg 
+        width="18" 
+        height="24" 
+        viewBox="0 0 18 24" 
+        fill="none" 
+        xmlns="http://www.w3.org/2000/svg"
+        className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]"
+      >
+        <path 
+          d="M0.5 0V22.5L5.7 17.3L9 23.5L12 22L8.7 15.8H15.5L0.5 0Z" 
+          fill="var(--accent)"
+          stroke="var(--bg)"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </motion.div>
   );
 }
