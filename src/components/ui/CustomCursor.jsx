@@ -27,15 +27,19 @@ export default function CustomCursor() {
       }}
     >
       <svg 
-        width="12" 
-        height="16" 
-        viewBox="0 0 12 16" 
+        width="20" 
+        height="24" 
+        viewBox="0 0 20 24" 
         fill="none" 
+        style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
         xmlns="http://www.w3.org/2000/svg"
       >
         <path 
-          d="M0 0V15.5L3.5 12L6 16L8 15L5.5 11H11L0 0Z" 
+          d="M1 1V21.5L7.5 15.5L11.5 22.5L14.5 21L10.5 14H18L1 1Z" 
           fill="var(--accent)"
+          stroke="#FFFFFF"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
         />
       </svg>
     </motion.div>

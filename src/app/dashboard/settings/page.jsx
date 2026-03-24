@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Settings, KeyRound, Brain, Camera, Save, Loader2, CheckCircle, Plus, Trash2, Eye, EyeOff, ExternalLink } from 'lucide-react';
+import { Settings, KeyRound, Brain, Camera, Save, Loader2, CheckCircle, Plus, Trash2, Eye, EyeOff, ExternalLink, Shield } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
+import SyncScoping from '../../../components/dashboard/IntelligenceSettings';
 
 function Section({ title, icon: Icon, children }) {
   return (
@@ -213,6 +214,7 @@ export default function DashboardSettings() {
       <div className="space-y-8">
         <PasswordReset />
         <AIContextEditor />
+        <SyncScoping />
         <GooglePhotosSetup />
       </div>
     </div>

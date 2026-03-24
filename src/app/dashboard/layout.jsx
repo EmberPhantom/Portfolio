@@ -70,6 +70,7 @@ export default function DashboardLayout({ children }) {
 
   const navItems = [
     { label: "Overview", path: "/dashboard", icon: LayoutDashboard },
+    { label: "Intelligence", path: "/dashboard/intelligence", icon: Brain },
     { label: "Articles (CMS)", path: "/dashboard/articles", icon: FileText },
     { label: "Categories", path: "/dashboard/categories", icon: FolderOpen },
     { label: "Analytics", path: "/dashboard/analytics", icon: Activity },
@@ -93,9 +94,15 @@ export default function DashboardLayout({ children }) {
               <path d="M22 10C27.5228 10 32 14.4772 32 20C32 25.5228 27.5228 30 22 30" stroke="currentColor" stroke-width="5" stroke-linecap="round" className="text-text"/>
               <circle cx="21" cy="20" r="3" fill="currentColor" className="text-accent"/>
             </svg>
-            <h1 className="text-xl font-bold font-display text-text leading-tight">
-              EmberOS<br/>Admin
-            </h1>
+            <div className="flex flex-col">
+              <h1 className="text-xl font-bold font-display text-text leading-tight group-hover:text-accent transition-colors">
+                EmberOS<br/>Admin
+              </h1>
+              <div className="flex items-center gap-1.5 mt-1">
+                <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-[8px] font-mono text-text-muted/60 uppercase tracking-widest">AI_SYNCHRONIZED</span>
+              </div>
+            </div>
           </div>
         </div>
 

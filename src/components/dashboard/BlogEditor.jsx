@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Save, X, Loader2, Globe, Lock, Clock, Tag, Folder, ChevronDown } from 'lucide-react';
+import { Save, X, Loader2, Globe, Lock, Clock, Tag, Folder, ChevronDown, Sparkles } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { updateContextFromArticle } from '../../lib/blog-ai';
 import dynamic from 'next/dynamic';
@@ -34,6 +34,7 @@ export default function BlogEditor({ post, onSave, onCancel }) {
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [isAuditing, setIsAuditing] = useState(false);
 
   // Load categories and populate form if editing
   useEffect(() => {
@@ -127,6 +128,29 @@ export default function BlogEditor({ post, onSave, onCancel }) {
       setSaveMsg(`Save failed: ${errorMsg}`);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleSEOAudit = async () => {
+    if (!meta.title || !content.text) return;
+    setIsAuditing(true);
+    try {
+      const { generateHeadlines, summarizeText } = await import('../../lib/blog-ai');
+      const betterSlugs = await generateHeadlines(meta.title);
+      const betterSummary = await summarizeText(content.text);
+      
+      if (betterSlugs?.length > 0) {
+        setMeta(prev => ({ 
+          ...prev, 
+          slug: betterSlugs[0].toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          excerpt: betterSummary || prev.excerpt 
+        }));
+        setSaveMsg('AI optimization applied to Slug and Excerpt.');
+      }
+    } catch (err) {
+      console.error('SEO Audit failed:', err);
+    } finally {
+      setIsAuditing(false);
     }
   };
 
@@ -253,7 +277,26 @@ export default function BlogEditor({ post, onSave, onCancel }) {
         </button>
 
         {showAdvanced && (
-          <div className="grid sm:grid-cols-2 gap-6 p-6 bg-bg/40 border border-muted/10 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="flex items-center justify-between p-4 bg-accent/5 border border-accent/20 rounded-2xl">
+              <div className="flex items-center gap-3">
+                <Sparkles className="w-5 h-5 text-accent" />
+                <div>
+                  <h4 className="text-sm font-black text-text uppercase tracking-tight">AI SEO Optimizer</h4>
+                  <p className="text-[10px] text-text-muted">Analyze discoverability & readability</p>
+                </div>
+              </div>
+              <button 
+                type="button" 
+                onClick={handleSEOAudit}
+                disabled={isAuditing}
+                className="flex items-center gap-2 px-4 py-2 bg-accent text-bg text-[10px] font-black rounded-lg hover:bg-accent/80 transition-all uppercase tracking-widest"
+              >
+                {isAuditing ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Run Smart Audit'}
+              </button>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-6 p-6 bg-bg/40 border border-muted/10 rounded-2xl">
             <div className="sm:col-span-2">
               <label className="block text-[10px] text-text-muted mb-2 font-black uppercase tracking-[0.2em]">Cover Image URL</label>
               <input type="url" name="cover_image" value={meta.cover_image} onChange={handleMetaChange} placeholder="https://..." className="w-full bg-surface border border-muted/20 rounded-xl px-4 py-3 text-sm text-text focus:border-accent outline-none transition-all" />
@@ -267,7 +310,8 @@ export default function BlogEditor({ post, onSave, onCancel }) {
               <textarea name="excerpt" value={meta.excerpt} onChange={handleMetaChange} rows={2} className="w-full bg-surface border border-muted/20 rounded-xl px-4 py-3 text-sm text-text focus:border-accent outline-none resize-none transition-all" />
             </div>
           </div>
-        )}
+        </div>
+      )}
       </div>
 
       {/* The Editor */}

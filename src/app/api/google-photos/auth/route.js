@@ -11,6 +11,8 @@ export async function GET() {
   const scope = [
     'https://www.googleapis.com/auth/photoslibrary.readonly',
     'https://www.googleapis.com/auth/photoslibrary.appendonly',
+    'https://www.googleapis.com/auth/drive.metadata.readonly',
+    'https://www.googleapis.com/auth/drive.readonly',
   ].join(' ');
 
   const params = new URLSearchParams({
