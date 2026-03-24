@@ -16,12 +16,10 @@ export default function ClientLayout({ children }) {
 
   if (isDashboard) {
     return (
-      <SmoothScroll>
-        <div className="min-h-screen bg-forge-black selection:bg-orange-500/30">
-          {children}
-          <CustomCursor />
-        </div>
-      </SmoothScroll>
+      <div className="min-h-screen bg-forge-black selection:bg-orange-500/30">
+        {children}
+        <CustomCursor />
+      </div>
     );
   }
 
