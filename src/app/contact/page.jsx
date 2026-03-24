@@ -122,9 +122,9 @@ export default function ContactPage() {
               <TerminalIcon className="w-4 h-4" /> Output
             </span>
             <div className="flex gap-2">
-              <span className="w-3 h-3 rounded-full bg-forge-muted" />
-              <span className="w-3 h-3 rounded-full bg-forge-muted" />
-              <span className="w-3 h-3 rounded-full bg-forge-muted" />
+              <span className="w-3 h-3 rounded-full bg-muted/40" />
+              <span className="w-3 h-3 rounded-full bg-muted/40" />
+              <span className="w-3 h-3 rounded-full bg-muted/40" />
             </div>
           </div>
           <div className="flex-1 p-4 font-mono text-sm overflow-y-auto flex flex-col gap-2">
@@ -132,8 +132,8 @@ export default function ContactPage() {
               <div 
                 key={i} 
                 className={`
-                  ${line.type === 'system' ? 'text-gray-500' : ''}
-                  ${line.type === 'info' ? 'text-blue-400' : ''}
+                  ${line.type === 'system' ? 'text-text-muted' : ''}
+                  ${line.type === 'info' ? 'text-accent' : ''}
                   ${line.type === 'success' ? 'text-green-500' : ''}
                   ${line.type === 'error' ? 'text-red-500' : ''}
                 `}
@@ -141,7 +141,7 @@ export default function ContactPage() {
                 {line.text}
               </div>
             ))}
-            {compiling && <div className="text-orange-500 animate-pulse">_</div>}
+            {compiling && <div className="text-accent animate-pulse">_</div>}
           </div>
         </div>
       </motion.div>

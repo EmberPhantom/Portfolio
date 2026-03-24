@@ -24,16 +24,16 @@ export default function ProjectModal({ repo, onClose, languageColor }) {
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-forge-surface w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-2xl border border-forge-muted/20"
+        className="bg-surface w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-2xl border border-muted/20 shadow-2xl"
       >
         <div className="flex flex-col lg:flex-row h-full">
           <div className="flex-1 p-6 overflow-y-auto">
             <div className="flex items-start justify-between mb-4">
               <div>
-                <h2 className="font-display text-2xl font-bold text-white mb-2">
+                <h2 className="font-display text-2xl font-bold text-text mb-2">
                   {repo.name}
                 </h2>
-                <div className="flex items-center gap-4 text-sm text-gray-400">
+                <div className="flex items-center gap-4 text-sm text-text-muted">
                   {repo.language && (
                     <div className="flex items-center gap-2">
                       <span
@@ -55,13 +55,13 @@ export default function ProjectModal({ repo, onClose, languageColor }) {
               </div>
               <button
                 onClick={onClose}
-                className="p-2 rounded-lg hover:bg-forge-black transition-colors"
+                className="p-2 rounded-lg hover:bg-bg transition-colors"
               >
-                <X className="w-5 h-5 text-gray-400" />
+                <X className="w-5 h-5 text-text-muted" />
               </button>
             </div>
 
-            <p className="text-gray-300 mb-6">
+            <p className="text-text/80 mb-6">
               {repo.description || 'No description available for this project.'}
             </p>
 
@@ -69,7 +69,7 @@ export default function ProjectModal({ repo, onClose, languageColor }) {
               {repo.topics?.map((topic) => (
                 <span
                   key={topic}
-                  className="px-3 py-1 text-sm bg-orange-500/10 rounded-full text-orange-500 border border-orange-500/20"
+                  className="px-3 py-1 text-sm bg-accent/10 rounded-full text-accent border border-accent/20"
                 >
                   {topic}
                 </span>
@@ -81,7 +81,7 @@ export default function ProjectModal({ repo, onClose, languageColor }) {
                 href={repo.html_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-forge-black rounded-lg text-white hover:text-orange-500 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-bg rounded-lg text-text hover:text-accent transition-colors border border-muted/10 font-medium"
               >
                 <Github className="w-4 h-4" />
                 View Code
@@ -91,7 +91,7 @@ export default function ProjectModal({ repo, onClose, languageColor }) {
                   href={repo.homepage}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 text-forge-black rounded-lg font-medium hover:bg-orange-400 transition-colors"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-bg rounded-lg font-bold hover:bg-accent/80 transition-colors shadow-lg shadow-accent/20"
                 >
                   <ExternalLink className="w-4 h-4" />
                   Live Demo
@@ -99,15 +99,15 @@ export default function ProjectModal({ repo, onClose, languageColor }) {
               )}
             </div>
 
-            <div className="p-4 bg-forge-black rounded-lg">
-              <h3 className="text-sm font-medium text-gray-400 mb-2">Last Updated</h3>
-              <p className="text-white">{formatDate(repo.updated_at)}</p>
+            <div className="p-4 bg-bg rounded-lg border border-muted/10">
+              <h3 className="text-sm font-medium text-text-muted mb-2">Last Updated</h3>
+              <p className="text-text">{formatDate(repo.updated_at)}</p>
             </div>
 
             {!showAIChat && (
               <button
                 onClick={() => setShowAIChat(true)}
-                className="mt-4 w-full py-3 bg-gradient-to-r from-orange-600 to-orange-500 text-forge-black font-semibold rounded-lg hover:from-orange-500 hover:to-orange-400 transition-all"
+                className="mt-4 w-full py-3 bg-accent text-bg font-bold rounded-lg hover:bg-accent/80 transition-all shadow-lg shadow-accent/10"
               >
                 Ask AI About This Project
               </button>
@@ -115,7 +115,7 @@ export default function ProjectModal({ repo, onClose, languageColor }) {
           </div>
 
           {showAIChat && (
-            <div className="w-full lg:w-96 border-l border-forge-muted/20">
+            <div className="w-full lg:w-96 border-l border-muted/20">
               <AIChat repo={repo} onClose={() => setShowAIChat(false)} />
             </div>
           )}

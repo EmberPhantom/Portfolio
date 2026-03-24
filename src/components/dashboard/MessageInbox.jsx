@@ -54,9 +54,9 @@ export default function MessageInbox() {
 
   return (
     <div>
-      <h2 className="font-display text-2xl font-bold text-white mb-8">Messages</h2>
+      <h2 className="font-display text-2xl font-bold text-text mb-8">Messages</h2>
       {messages.length === 0 ? (
-        <p className="text-gray-500 text-center py-8">No messages yet</p>
+        <p className="text-text-muted text-center py-8">No messages yet</p>
       ) : (
         <div className="space-y-4">
           {messages.map((msg) => (
@@ -64,24 +64,24 @@ export default function MessageInbox() {
               key={msg.id}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className={`p-4 bg-forge-surface rounded-xl border ${msg.read ? "border-forge-muted/20" : "border-orange-500/50"}`}
+              className={`p-4 bg-surface rounded-xl border ${msg.read ? "border-muted/20" : "border-accent/50 shadow-[0_0_10px_var(--accent-hover)]/10"}`}
             >
               <div className="flex justify-between items-start mb-2">
                 <div>
-                  <h4 className="font-medium text-white">{msg.name}</h4>
-                  <a href={`mailto:${msg.email}`} className="text-sm text-orange-500">{msg.email}</a>
+                  <h4 className="font-medium text-text">{msg.name}</h4>
+                  <a href={`mailto:${msg.email}`} className="text-sm text-accent hover:underline">{msg.email}</a>
                 </div>
-                <span className="text-xs text-gray-500">{formatDate(msg.created_at)}</span>
+                <span className="text-xs text-text-muted">{formatDate(msg.created_at)}</span>
               </div>
-              {msg.subject && <p className="text-sm text-gray-400 mb-2">Subject: {msg.subject}</p>}
-              <p className="text-gray-300 mb-4">{msg.body}</p>
+              {msg.subject && <p className="text-sm text-text-muted mb-2">Subject: {msg.subject}</p>}
+              <p className="text-text/90 mb-4 leading-relaxed">{msg.body}</p>
               <div className="flex gap-2">
                 {!msg.read && (
-                  <button onClick={() => handleMarkAsRead(msg.id)} className="flex items-center gap-1 px-3 py-1 text-sm text-gray-400 hover:text-orange-500">
+                  <button onClick={() => handleMarkAsRead(msg.id)} className="flex items-center gap-1 px-3 py-1 text-sm text-text-muted hover:text-accent transition-colors">
                     <Check className="w-4 h-4" /> Mark read
                   </button>
                 )}
-                <button onClick={() => handleDelete(msg.id)} className="flex items-center gap-1 px-3 py-1 text-sm text-gray-400 hover:text-red-500">
+                <button onClick={() => handleDelete(msg.id)} className="flex items-center gap-1 px-3 py-1 text-sm text-text-muted hover:text-red-500 transition-colors">
                   <Trash2 className="w-4 h-4" /> Delete
                 </button>
               </div>

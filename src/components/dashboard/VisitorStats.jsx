@@ -40,21 +40,21 @@ export default function VisitorStats() {
 
   return (
     <div>
-      <h2 className="font-display text-2xl font-bold text-white mb-8">Visitor Analytics</h2>
+      <h2 className="font-display text-2xl font-bold text-text mb-8">Visitor Analytics</h2>
       
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="p-6 bg-forge-surface rounded-xl border border-forge-muted/20">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="p-6 bg-surface rounded-xl border border-muted/20">
           <div className="flex items-center gap-3 mb-2">
-            <Users className="w-5 h-5 text-orange-500" />
-            <span className="text-gray-400">Total Visits</span>
+            <Users className="w-5 h-5 text-accent" />
+            <span className="text-text-muted">Total Visits</span>
           </div>
-          <p className="text-3xl font-bold text-white">{stats.total}</p>
+          <p className="text-3xl font-bold text-text">{stats.total}</p>
         </motion.div>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
-        <div className="bg-forge-surface rounded-xl border border-forge-muted/20 p-6">
-          <h3 className="font-display text-lg font-bold text-white mb-4">Devices</h3>
+        <div className="bg-surface rounded-xl border border-muted/20 p-6">
+          <h3 className="font-display text-lg font-bold text-text mb-4">Devices</h3>
           <div className="space-y-3">
             {Object.entries(stats.devices).map(([device, count]) => {
               const Icon = deviceIcons[device] || Monitor
@@ -62,11 +62,11 @@ export default function VisitorStats() {
               return (
                 <div key={device}>
                   <div className="flex justify-between text-sm mb-1">
-                    <span className="text-gray-400 capitalize flex items-center gap-2"><Icon className="w-4 h-4" />{device}</span>
-                    <span className="text-white">{percent}%</span>
+                    <span className="text-text-muted capitalize flex items-center gap-2"><Icon className="w-4 h-4" />{device}</span>
+                    <span className="text-text">{percent}%</span>
                   </div>
-                  <div className="h-2 bg-forge-black rounded-full overflow-hidden">
-                    <motion.div initial={{ width: 0 }} animate={{ width: `${percent}%` }} className="h-full bg-orange-500" />
+                  <div className="h-2 bg-muted/20 rounded-full overflow-hidden">
+                    <motion.div initial={{ width: 0 }} animate={{ width: `${percent}%` }} className="h-full bg-accent" />
                   </div>
                 </div>
               )
@@ -74,13 +74,13 @@ export default function VisitorStats() {
           </div>
         </div>
 
-        <div className="bg-forge-surface rounded-xl border border-forge-muted/20 p-6">
-          <h3 className="font-display text-lg font-bold text-white mb-4">Top Countries</h3>
+        <div className="bg-surface rounded-xl border border-muted/20 p-6">
+          <h3 className="font-display text-lg font-bold text-text mb-4">Top Countries</h3>
           <div className="space-y-2">
             {Object.entries(stats.countries).slice(0, 5).map(([country, count]) => (
-              <div key={country} className="flex justify-between items-center p-2 rounded-lg hover:bg-forge-black/50">
-                <span className="text-gray-300 flex items-center gap-2"><Globe className="w-4 h-4" />{country}</span>
-                <span className="text-orange-500 font-medium">{count}</span>
+              <div key={country} className="flex justify-between items-center p-2 rounded-lg hover:bg-muted/10 transition-colors">
+                <span className="text-text-muted flex items-center gap-2"><Globe className="w-4 h-4" />{country}</span>
+                <span className="text-accent font-medium">{count}</span>
               </div>
             ))}
           </div>

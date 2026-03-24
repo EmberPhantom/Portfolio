@@ -40,24 +40,15 @@ export default function Navbar() {
       >
         <div className="flex flex-col items-center lg:items-start px-0 lg:px-8">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 mb-12" title="Home" aria-label="EmberOS Home">
-            <div className="w-10 h-10 relative shrink-0">
-              <svg viewBox="0 0 40 40" className="w-full h-full">
-                <polygon points="20,2 38,11 38,29 20,38 2,29 2,11" fill="var(--accent)" />
-                <text
-                  x="20"
-                  y="26"
-                  textAnchor="middle"
-                  fill="var(--bg)"
-                  fontSize="14"
-                  fontWeight="800"
-                  fontFamily="Syne"
-                >
-                  PC
-                </text>
+          <Link href="/" className="flex items-center gap-3 mb-12 group/logo" title="Home" aria-label="EmberOS Home">
+            <div className="w-10 h-10 border border-muted/30 rounded-lg flex items-center justify-center bg-surface group-hover/logo:border-accent group-hover/logo:shadow-[0_0_15px_var(--accent)] transition-all duration-300">
+              <svg width="24" height="24" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-text">
+                <rect x="8" y="4" width="6" height="32" rx="1" fill="currentColor"/>
+                <path d="M22 8C28.6274 8 34 13.3726 34 20C34 26.6274 28.6274 32 22 32" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+                <circle cx="21" cy="20" r="3.5" fill="#F97316"/>
               </svg>
             </div>
-            <span className="font-display font-bold text-xl text-text hidden lg:block tracking-wide">
+            <span className="font-display font-bold text-xl text-text hidden lg:block tracking-tighter group-hover/logo:text-accent transition-colors">
               EmberOS
             </span>
           </Link>
@@ -128,11 +119,13 @@ export default function Navbar() {
             </button>
           </div>
 
-          <div className="flex flex-col items-center lg:flex-row lg:items-center gap-2 p-3 bg-muted/10 rounded-xl w-full justify-center lg:justify-start border border-muted/20 text-xs">
-            <Circle className="w-2 h-2 fill-green-500 text-green-500 animate-pulse shrink-0" />
+          <div className="flex flex-col items-center lg:flex-row lg:items-center gap-3 p-3 bg-muted/5 rounded-xl w-full justify-center lg:justify-start border border-muted/10 text-[10px] uppercase tracking-widest">
+            <div className="relative">
+              <Circle className="w-2 h-2 fill-green-500 text-green-500 shrink-0" />
+              <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-20" />
+            </div>
             <span className="text-text-muted hidden lg:inline">
-              Status:{" "}
-              <span className="text-text font-medium">Online</span>
+              System: <span className="text-text font-bold">Stable</span>
             </span>
           </div>
         </div>

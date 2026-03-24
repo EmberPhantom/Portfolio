@@ -15,7 +15,7 @@ export function CinematicHero({ headline, subheadline, slug }) {
       </motion.p>
       <motion.h1 
         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-        className="text-6xl md:text-8xl lg:text-9xl font-display font-black text-text uppercase tracking-tighter leading-none mb-6"
+        className="text-5xl md:text-7xl lg:text-8xl font-display font-black text-text uppercase tracking-tighter leading-none mb-6"
       >
         {headline}
       </motion.h1>

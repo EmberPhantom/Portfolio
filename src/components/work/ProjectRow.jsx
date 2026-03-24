@@ -41,11 +41,11 @@ export default function ProjectRow({ repo, index }) {
       className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-12 md:gap-24 group relative`}
     >
       {/* Image Container with Parallax */}
-      <div className="w-full md:w-1/2 h-[400px] md:h-[600px] overflow-hidden rounded-3xl relative">
+      <div className="w-full md:w-1/2 h-[350px] md:h-[500px] lg:h-[600px] overflow-hidden rounded-2xl relative">
         <Link href={`/work/${repo.name}`} className="absolute inset-0 z-20" />
         <motion.div 
           style={{ y, scale }}
-          className="w-full h-[140%] relative -top-[20%]"
+          className="w-full h-[120%] relative -top-[10%]"
         >
           <div className="absolute inset-0 bg-bg/20 group-hover:bg-transparent transition-colors duration-700 z-10" />
           <Image 
@@ -78,7 +78,7 @@ export default function ProjectRow({ repo, index }) {
           )}
         </div>
         <Link href={`/work/${repo.name}`} className="group-hover:text-accent transition-colors">
-          <h2 className="text-4xl md:text-7xl font-display font-black text-text uppercase tracking-tighter mb-6 break-words leading-[0.9]">
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-display font-black text-text uppercase tracking-tighter mb-6 break-words leading-[0.85]">
             {repo.name.replace(/-/g, ' ')}
           </h2>
         </Link>

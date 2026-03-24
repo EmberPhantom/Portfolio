@@ -39,3 +39,20 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# agentic tools & metadata
+.gemini/
+brain/
+tmp/
+
+# build artifacts
+dist/
+out/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+temp/

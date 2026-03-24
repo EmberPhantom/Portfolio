@@ -7,7 +7,7 @@ export default async function Work() {
   return (
     <div className="pt-32 pb-32 px-6 md:px-12 max-w-7xl mx-auto w-full relative">
       <div className="mb-32">
-        <h1 className="text-6xl md:text-9xl font-display font-black text-text uppercase tracking-tighter leading-none mb-6">
+        <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-black text-text uppercase tracking-tighter leading-none mb-6">
           Selected <br/><span className="text-accent">Works.</span>
         </h1>
         <p className="text-text-muted text-xl max-w-xl md:ml-2">

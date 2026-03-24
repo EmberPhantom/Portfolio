@@ -160,7 +160,7 @@ export default function AIAssistant() {
     <>
       {/* Toggle Button */}
       <motion.button
-        className="fixed bottom-6 right-6 z-40 bg-orange-500 text-forge-black p-4 rounded-full shadow-lg shadow-orange-500/25 hover:bg-orange-400 active:scale-95 transition-all"
+        className="fixed bottom-6 right-6 z-40 bg-accent text-bg p-4 rounded-full shadow-lg shadow-accent/25 hover:bg-accent-hover active:scale-95 transition-all"
         onClick={() => setIsOpen(!isOpen)}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
@@ -191,8 +191,8 @@ export default function AIAssistant() {
                 <Bot className="w-5 h-5" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-white font-bold text-sm">Pranay's AI Agent</h3>
-                <p className="text-xs flex items-center gap-1.5 text-gray-500">
+                <h3 className="text-text font-bold text-sm">Pranay's AI Agent</h3>
+                <p className="text-xs flex items-center gap-1.5 text-text-muted">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shrink-0" />
                   {deepMode ? 'Deep Reasoning Mode' : 'Standard Mode'}
                 </p>
@@ -229,7 +229,7 @@ export default function AIAssistant() {
               {messages.map((msg, idx) => <MessageBubble key={idx} msg={msg} />)}
               {isTyping && (
                 <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-orange-500/10 text-orange-500 border border-orange-500/30 flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-accent/10 text-accent border border-accent/30 flex items-center justify-center shrink-0">
                     <Bot className="w-4 h-4" />
                   </div>
                   <div className="px-4 py-3 rounded-2xl rounded-tl-none bg-surface border border-muted/20 flex items-center gap-1.5">
