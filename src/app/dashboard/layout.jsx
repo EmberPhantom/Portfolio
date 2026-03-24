@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "../../lib/supabase";
-import { LogOut, LayoutDashboard, FileText, Activity, FolderOpen, Settings } from "lucide-react";
+import { LogOut, LayoutDashboard, FileText, Activity, FolderOpen, Settings, Brain } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function DashboardLayout({ children }) {

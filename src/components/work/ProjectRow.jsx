@@ -1,26 +1,53 @@
 "use client";
 
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
 
 // Helper to assign a cinematic placeholder image based on repo name hash
-function getPlaceholderImage(repoName) {
-  const images = [
-    'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1200&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop'
-  ];
-  const hash = repoName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  return images[hash % images.length];
+// Helper to assign a cinematic placeholder image based on repo name and description
+function getPlaceholderImage(repoName, description) {
+  const name = repoName.toLowerCase();
+  const desc = (description || '').toLowerCase();
+
+  // 1. Check for specific high-profile projects
+  if (name.includes('contexia')) return '/projects/contexia.png';
+  if (name.includes('portfolio') || name.includes('emberos')) return '/projects/portfolio.png';
+  if (name.includes('archonix') || name.includes('system') || name.includes('management')) return '/projects/system.png';
+
+  // 2. Keyword-based categories
+  const categories = {
+    ai: ['ai', 'intelligence', 'gpt', 'llm', 'autonomous', 'vision'],
+    code: ['code', 'lib', 'script', 'engine', 'core', 'developer'],
+    web: ['web', 'portfolio', 'site', 'react', 'next', 'css'],
+    data: ['data', 'analytics', 'vis', 'logs', 'database', 'sql'],
+    social: ['social', 'twitter', 'linkedin', 'media', 'thread'],
+  };
+
+  const images = {
+    ai: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1200&auto=format&fit=crop',
+    code: 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=1200&auto=format&fit=crop',
+    web: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop',
+    data: 'https://images.unsplash.com/photo-1518186239124-fd2f9012a68c?q=80&w=1200&auto=format&fit=crop',
+    social: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1200&auto=format&fit=crop',
+    default: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200&auto=format&fit=crop'
+  };
+
+  const text = `${name} ${desc}`;
+  for (const [cat, keywords] of Object.entries(categories)) {
+    if (keywords.some(k => text.includes(k))) return images[cat];
+  }
+
+  return images.default;
 }
 
 export default function ProjectRow({ repo, index }) {
+  const [aiImage, setAiImage] = useState(null);
+  const [isAiLoading, setIsAiLoading] = useState(false);
   const ref = useRef(null);
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"]
@@ -31,8 +58,24 @@ export default function ProjectRow({ repo, index }) {
   const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
 
   const isEven = index % 2 === 0;
-  const imageUrl = getPlaceholderImage(repo.name);
+  const localImage = getPlaceholderImage(repo.name, repo.description);
+  const isCustomLocal = localImage.startsWith('/projects/');
   const formattedDate = new Date(repo.updated_at).getFullYear();
+
+  useEffect(() => {
+    if (!isCustomLocal) {
+      setIsAiLoading(true);
+      fetch(`/api/projects/image?name=${repo.name}&desc=${encodeURIComponent(repo.description || '')}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.imageUrl) setAiImage(data.imageUrl);
+        })
+        .catch(() => {})
+        .finally(() => setIsAiLoading(false));
+    }
+  }, [repo.name, repo.description, isCustomLocal]);
+
+  const imageUrl = isCustomLocal ? localImage : (aiImage || localImage);
 
   return (
     <motion.div 
@@ -47,13 +90,18 @@ export default function ProjectRow({ repo, index }) {
           style={{ y, scale }}
           className="w-full h-[120%] relative -top-[10%]"
         >
+          {isAiLoading && (
+            <div className="absolute inset-0 bg-muted/20 animate-pulse z-30 flex items-center justify-center">
+               <span className="text-[10px] font-mono text-accent uppercase tracking-widest">AI SYNCING...</span>
+            </div>
+          )}
           <div className="absolute inset-0 bg-bg/20 group-hover:bg-transparent transition-colors duration-700 z-10" />
           <Image 
             src={imageUrl}
             alt={repo.name}
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover object-center filter grayscale group-hover:grayscale-0 transition-all duration-700"
+            className={`object-cover object-center filter grayscale group-hover:grayscale-0 transition-all duration-700 ${isAiLoading ? 'opacity-0' : 'opacity-100'}`}
           />
         </motion.div>
         
@@ -78,7 +126,7 @@ export default function ProjectRow({ repo, index }) {
           )}
         </div>
         <Link href={`/work/${repo.name}`} className="group-hover:text-accent transition-colors">
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-display font-black text-text uppercase tracking-tighter mb-6 break-words leading-[0.85]">
+          <h2 className="text-4xl md:text-5xl lg:text-[clamp(2.5rem,8vw,5rem)] font-display font-black text-text uppercase tracking-tighter mb-6 break-words leading-[0.9]">
             {repo.name.replace(/-/g, ' ')}
           </h2>
         </Link>
