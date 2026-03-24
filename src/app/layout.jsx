@@ -3,6 +3,7 @@ import "./editor.css";
 import { Syne, DM_Sans, JetBrains_Mono } from "next/font/google";
 import Providers from "../components/layout/Providers";
 import ClientLayout from "../components/layout/ClientLayout";
+import { Analytics } from "@vercel/analytics/react";
 
 const syne = Syne({
   subsets: ["latin"],
@@ -47,6 +48,7 @@ export default function RootLayout({ children }) {
           <Providers>
             <ClientLayout>{children}</ClientLayout>
           </Providers>
+          <Analytics />
         </div>
       </body>
     </html>
