@@ -5,10 +5,14 @@ import CustomCursor from '../ui/CustomCursor';
 import TerminalOverlay from '../ui/TerminalOverlay';
 import AIAssistant from '../ui/AIAssistant';
 import SmoothScroll from './SmoothScroll';
+import { useVisitorTracker } from '../../hooks/useVisitorTracker';
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
   const isDashboard = pathname?.startsWith('/dashboard');
+
+  // Track public visits
+  useVisitorTracker(isDashboard);
 
   if (isDashboard) {
     return (

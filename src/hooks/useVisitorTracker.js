@@ -1,8 +1,10 @@
 import { useEffect } from "react"
 import { supabase } from "../lib/supabase"
 
-export function useVisitorTracker() {
+export function useVisitorTracker(isDashboard = false) {
   useEffect(() => {
+    if (isDashboard) return;
+
     async function trackVisit() {
       const sessionId = sessionStorage.getItem("visitor_session") || crypto.randomUUID()
       sessionStorage.setItem("visitor_session", sessionId)

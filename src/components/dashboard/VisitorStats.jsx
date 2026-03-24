@@ -36,7 +36,7 @@ export default function VisitorStats() {
 
   const deviceIcons = { desktop: Monitor, mobile: Smartphone, tablet: Tablet }
 
-  if (loading) return <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 text-orange-500 animate-spin" /></div>
+  if (loading) return <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 text-accent animate-spin" /></div>
 
   return (
     <div>

@@ -87,6 +87,7 @@ ALTER TABLE oauth_tokens ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public read categories" ON categories FOR SELECT USING (true);
 CREATE POLICY "Public read published posts" ON blog_posts FOR SELECT USING (published = true);
 CREATE POLICY "Public insert logs" ON visitor_logs FOR INSERT WITH CHECK (true);
+CREATE POLICY "Public read logs" ON visitor_logs FOR SELECT USING (true);
 CREATE POLICY "Public insert messages" ON messages FOR INSERT WITH CHECK (true);
 
 -- Admin Access (Requires Auth)
