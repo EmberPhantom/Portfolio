@@ -114,23 +114,23 @@ export default function ProjectRow({ repo, index }) {
       </div>
 
       {/* Typography Data */}
-      <div className={`w-full md:w-1/2 flex flex-col ${isEven ? 'items-start text-left' : 'items-start md:items-end text-left md:text-right'}`}>
-        <div className="flex gap-3 mb-6">
-          <span className="text-accent font-mono text-sm tracking-widest border border-accent/30 px-3 py-1 rounded-full">
+      <div className={`w-full md:w-1/2 flex flex-col ${isEven ? 'items-start' : 'items-start md:items-end'} relative z-10`}>
+        <div className="flex gap-3 mb-8">
+          <span className="text-accent font-mono text-xs tracking-[0.3em] border border-accent/20 px-4 py-1.5 rounded-full bg-accent/5 uppercase shadow-sm">
             {formattedDate}
           </span>
           {repo.language && (
-             <span className="text-text-muted font-mono text-sm tracking-widest border border-muted/50 px-3 py-1 rounded-full">
+             <span className="text-text-muted font-mono text-xs tracking-[0.3em] border border-muted/30 px-4 py-1.5 rounded-full bg-muted/5 uppercase">
                {repo.language}
              </span>
           )}
         </div>
-        <Link href={`/work/${repo.name}`} className="group-hover:text-accent transition-colors block w-full">
-          <h2 className="text-3xl md:text-5xl lg:text-[clamp(2rem,6vw,4rem)] font-display font-black text-text uppercase tracking-tighter mb-6 break-words leading-[0.95] max-w-full">
+        <Link href={`/work/${repo.name}`} className="group-hover:text-accent transition-all duration-500 block">
+          <h2 className="text-4xl md:text-6xl lg:text-[clamp(2.5rem,5vw,3.8rem)] font-display font-bold text-text uppercase tracking-tighter mb-8 break-words leading-[0.85] py-2">
             {repo.name.replace(/-/g, ' ')}
           </h2>
         </Link>
-        <p className="text-lg md:text-xl text-text-muted max-w-md line-clamp-3 leading-relaxed">
+        <p className={`text-lg md:text-xl text-text-muted max-w-md leading-relaxed ${!isEven && 'md:text-right'}`}>
           {repo.description || 'System architecture and engineering deep dive. View the case study for architectural details and implementation philosophy.'}
         </p>
         

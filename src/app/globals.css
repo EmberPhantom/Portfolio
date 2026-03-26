@@ -3,11 +3,56 @@
 @theme {
   /* ===== Custom Animations ===== */
   --animate-pulse-ring: pulse-ring 2s ease-out infinite;
+  --animate-scan: scanning 8s linear infinite;
+
+  /* ===== Color Palette ===== */
+  --color-bg: #0A0A0A;
+  --color-surface: #141414;
+  --color-surface-hover: #1e1e1e;
+  --color-muted: #3F3F46;
+  --color-text: #FFFFFF;
+  --color-text-muted: #A1A1AA;
+  --color-accent: #F97316;
+  --color-accent-hover: #FB923C;
 }
 
 @keyframes pulse-ring {
   0%   { transform: scale(1); opacity: 0.8; }
   100% { transform: scale(1.5); opacity: 0; }
+}
+
+@keyframes scanning {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+:root {
+  /* Provide CSS variables for non-tailwind usage if needed */
+  --bg: #0A0A0A;
+  --surface: #141414;
+  --accent: #F97316;
+  --text: #FFFFFF;
+  --text-muted: #A1A1AA;
+}
+
+/* ===== Premium Utilities ===== */
+.glass {
+  background-color: rgba(20, 20, 20, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(63, 63, 70, 0.2);
+}
+
+.glow-accent {
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.15);
+}
+
+.glow-text {
+  text-shadow: 0 0 15px rgba(249, 115, 22, 0.3);
+}
+
+.cinematic-gradient {
+  background: radial-gradient(circle at center, rgba(249, 115, 22, 0.05) 0%, transparent 70%);
 }
 
 * {
@@ -18,47 +63,11 @@ a, button, input, textarea, select, [role="button"] {
   cursor: none !important;
 }
 
-:root {
-  /* Dark Theme (Default) */
-  --bg: #0A0A0A;
-  --surface: #141414;
-  --surface-hover: #1e1e1e;
-  --muted: #3F3F46;
-  --text: #FFFFFF;
-  --text-muted: #A1A1AA;
-  --accent: #F97316;
-  --accent-hover: #FB923C;
-  --border: rgba(63, 63, 70, 0.2);
-}
-
-:root.light {
-  /* Light Theme (Professional Slate/Arctic) */
-  --bg: #F8FAFC;
-  --surface: #FFFFFF;
-  --surface-hover: #F1F5F9;
-  --muted: #E2E8F0;
-  --text: #0F172A;
-  --text-muted: #64748B;
-  --accent: #EA580C; /* Professional Orange (Better contrast on light) */
-  --accent-hover: #C2410C;
-  --border: rgba(15, 23, 42, 0.08);
-}
-
-/* ===== Base Styles ===== */
-*, *::before, *::after {
-  box-sizing: border-box;
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-}
-
-html {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 body {
   background-color: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
+  overflow-x: hidden;
 }
 
 ::selection {
@@ -72,6 +81,5 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-/* ===== Interactive class (disables cursor override) ===== */
 .interactive { cursor: none !important; }
 

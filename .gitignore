@@ -48,6 +48,7 @@ tmp/
 # build artifacts
 dist/
 out/
+build_log.txt
 
 # IDEs
 .vscode/
