@@ -1,22 +1,6 @@
 @import "tailwindcss";
-@plugin "@tailwindcss/typography";
 
 @theme {
-  /* ===== Color Palette Mapping ===== */
-  --color-bg: var(--bg);
-  --color-surface: var(--surface);
-  --color-surface-hover: var(--surface-hover);
-  --color-accent: var(--accent);
-  --color-text: var(--text);
-  --color-text-muted: var(--text-muted);
-  --color-muted: var(--muted);
-  --color-border: var(--border);
-
-  /* ===== Typography ===== */
-  --font-display: "Syne", sans-serif;
-  --font-body: "DM Sans", sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
-
   /* ===== Custom Animations ===== */
   --animate-pulse-ring: pulse-ring 2s ease-out infinite;
 }

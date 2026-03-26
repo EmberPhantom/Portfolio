@@ -14,14 +14,13 @@ export default function DashboardLayout({ children }) {
   const pathname = usePathname();
 
   useEffect(() => {
-    // If Supabase is not configured, allow mock UI access
     if (!supabase) {
       setLoading(false);
       return;
     }
 
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) router.push("/dashboard/login");
+      if (!session && pathname !== "/dashboard/login") router.push("/dashboard/login");
       else setSession(session);
       setLoading(false);
     });
@@ -30,83 +29,73 @@ export default function DashboardLayout({ children }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      if (!session) router.push("/dashboard/login");
+      if (!session && pathname !== "/dashboard/login") router.push("/dashboard/login");
     });
 
     return () => subscription.unsubscribe();
-  }, [router]);
-
-  const handleSignOut = async () => {
-    if (supabase) await supabase.auth.signOut();
-    router.push("/dashboard/login");
-  };
+  }, [router, pathname]);
 
   if (loading) {
     return (
-      <div className="h-screen bg-bg flex items-center justify-center">
-        <div className="flex flex-col items-center gap-6">
+      <div className="h-screen bg-[#050505] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-8">
           <div className="relative">
-            <div className="w-16 h-16 border-2 border-muted/20 border-t-accent rounded-full animate-spin" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
-            </div>
+             <div className="w-24 h-24 border-t-2 border-r-2 border-accent rounded-full animate-spin shadow-[0_0_30px_rgba(249,115,22,0.4)]" />
+             <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-12 h-12 border-b-2 border-l-2 border-accent/30 rounded-full animate-spin-reverse" />
+             </div>
           </div>
-          <span className="text-accent font-mono text-xs tracking-[0.3em] uppercase">
-            Initializing Core...
+          <span className="text-accent font-mono text-[10px] tracking-[0.5em] uppercase animate-pulse">
+            EmberOS_INIT_SEQUENCE
           </span>
         </div>
       </div>
     );
   }
 
-  // On the login page, just render children without the sidebar layout
-  if (pathname === "/dashboard/login") {
-    return (
-      <div className="h-screen bg-bg w-full relative overflow-hidden">
-        {children}
-      </div>
-    );
-  }
+  if (pathname === "/dashboard/login") return <div className="h-screen bg-[#050505]">{children}</div>;
 
   const navItems = [
     { label: "Overview", path: "/dashboard", icon: LayoutDashboard },
     { label: "Intelligence", path: "/dashboard/intelligence", icon: Brain },
-    { label: "Articles (CMS)", path: "/dashboard/articles", icon: FileText },
+    { label: "CMS / Articles", path: "/dashboard/articles", icon: FileText },
     { label: "Categories", path: "/dashboard/categories", icon: FolderOpen },
-    { label: "Analytics", path: "/dashboard/analytics", icon: Activity },
-    { label: "Settings", path: "/dashboard/settings", icon: Settings },
+    { label: "Telemetry", path: "/dashboard/analytics", icon: Activity },
+    { label: "System", path: "/dashboard/settings", icon: Settings },
   ];
 
   return (
-    <div className="h-screen bg-bg text-text flex flex-col md:flex-row relative overflow-hidden">
+    <div className="h-screen bg-[#050505] text-text flex flex-col md:flex-row relative overflow-hidden font-body">
+      {/* Background Ambience */}
+      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-accent/5 rounded-full blur-[150px] -mr-96 -mt-96 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-accent/3 rounded-full blur-[120px] -ml-48 -mb-48 pointer-events-none" />
+
       {/* Sidebar */}
-      <aside className="w-full md:w-64 bg-surface border-r border-muted/20 flex flex-col shrink-0">
-        <div className="p-6 border-b border-muted/20">
+      <aside className="w-full md:w-80 bg-surface/40 backdrop-blur-3xl border-r border-white/5 flex flex-col shrink-0 z-20">
+        <div className="p-8 border-b border-white/5">
           <Link
             href="/"
-            className="text-accent text-xs font-mono tracking-widest hover:text-accent/80 transition-colors flex items-center gap-2"
+            className="text-accent/50 text-[10px] font-mono tracking-[0.3em] hover:text-accent transition-all flex items-center gap-2 group mb-10"
           >
-            ← EXIT TO APP
+            <span className="group-hover:-translate-x-1 transition-transform">←</span> TERMINATE_DASHBOARD
           </Link>
-          <div className="mt-6 flex items-center gap-3">
-            <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
-              <rect x="10" y="6" width="5" height="28" rx="1" fill="currentColor" className="text-text"/>
-              <path d="M22 10C27.5228 10 32 14.4772 32 20C32 25.5228 27.5228 30 22 30" stroke="currentColor" stroke-width="5" stroke-linecap="round" className="text-text"/>
-              <circle cx="21" cy="20" r="3" fill="currentColor" className="text-accent"/>
-            </svg>
-            <div className="flex flex-col">
-              <h1 className="text-xl font-bold font-display text-text leading-tight group-hover:text-accent transition-colors">
-                EmberOS<br/>Admin
-              </h1>
-              <div className="flex items-center gap-1.5 mt-1">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-[8px] font-mono text-text-muted/60 uppercase tracking-widest">AI_SYNCHRONIZED</span>
-              </div>
+          
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-accent/10 border border-accent/20 rounded-2xl flex items-center justify-center shadow-lg shadow-accent/5">
+               <svg width="28" height="28" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="8" y="2" width="6" height="36" rx="1.5" fill="currentColor" className="text-white"/>
+                  <path d="M22 6C30.2843 6 37 12.7157 37 21C37 29.2843 30.2843 36 22 36" stroke="currentColor" stroke-width="5" stroke-linecap="round" className="text-white"/>
+                  <circle cx="21" cy="21" r="4" fill="currentColor" className="text-accent animate-pulse"/>
+               </svg>
+            </div>
+            <div>
+              <h1 className="text-lg font-display font-black text-white leading-none tracking-tight">EmberOS</h1>
+              <span className="text-[10px] text-text-muted/60 uppercase tracking-[0.2em] font-mono">Control_Center v2.5</span>
             </div>
           </div>
         </div>
 
-        <nav className="flex-1 p-4 flex flex-col gap-1.5 overflow-y-auto">
+        <nav className="flex-1 p-6 flex flex-col gap-2 overflow-y-auto custom-scrollbar">
           {navItems.map((item) => {
             const isActive = pathname === item.path;
             const Icon = item.icon;
@@ -114,59 +103,68 @@ export default function DashboardLayout({ children }) {
               <Link
                 key={item.label}
                 href={item.path}
-                className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-300 ${
+                className={`flex items-center gap-4 p-4 rounded-2xl transition-all duration-500 relative group ${
                   isActive
-                    ? "bg-accent/10 text-accent border border-accent/20"
-                    : "hover:bg-muted/10 text-text-muted hover:text-text"
+                    ? "bg-accent/10 text-accent border border-accent/20 translate-x-1 shadow-2xl shadow-accent/5"
+                    : "hover:bg-white/5 text-text-muted hover:text-text"
                 }`}
               >
-                <Icon className={`w-5 h-5 ${isActive ? "text-accent" : "text-text-muted"}`} />
-                <span className="font-medium text-sm">{item.label}</span>
+                {isActive && (
+                  <motion.div 
+                    layoutId="sidebar-active"
+                    className="absolute left-0 w-1 h-6 bg-accent rounded-full -ml-3"
+                  />
+                )}
+                <Icon className={`w-5 h-5 transition-transform group-hover:scale-110 ${isActive ? "text-accent" : "text-text-muted"}`} />
+                <span className="font-bold text-xs uppercase tracking-widest">{item.label}</span>
               </Link>
             );
           })}
         </nav>
 
-        <div className="p-4 border-t border-muted/20">
+        <div className="p-6 border-t border-white/5 bg-black/20">
           <button
-            onClick={handleSignOut}
-            className="flex items-center gap-3 p-3 w-full rounded-xl text-text-muted hover:bg-red-500/10 hover:text-red-500 transition-colors"
-            aria-label="Sign Out"
+            onClick={async () => {
+              if (supabase) await supabase.auth.signOut();
+              router.push("/dashboard/login");
+            }}
+            className="flex items-center gap-4 p-4 w-full rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-red-500/60 hover:text-red-500 hover:bg-red-500/5 transition-all"
           >
-            <LogOut className="w-5 h-5" />
-            <span className="font-medium text-sm">Terminate Session</span>
+            <LogOut className="w-4 h-4" />
+            <span>Kill_Session</span>
           </button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto p-6 md:p-12 relative bg-bg/50 scroll-smooth">
-        {!supabase && (
-          <div className="mb-8 p-4 bg-accent/10 border border-accent/30 text-accent rounded-xl text-sm flex items-start gap-3">
-            <span className="text-xl shrink-0">⚠️</span>
-            <div>
-              <p className="font-bold">Database Disconnected</p>
-              <p className="text-accent/70">
-                Add <code className="bg-bg/50 px-1 rounded">NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
-                <code className="bg-bg/50 px-1 rounded">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> to{" "}
-                <code className="bg-muted/10 px-1 rounded">.env.local</code> to enable live data.
-              </p>
+      <main className="flex-1 overflow-y-auto relative bg-transparent scroll-smooth custom-scrollbar">
+        <div className="max-w-7xl mx-auto p-8 md:p-16 min-h-screen">
+          {!supabase && (
+            <div className="mb-12 p-6 bg-orange-500/5 border border-orange-500/20 rounded-[2rem] flex items-center justify-between backdrop-blur-xl">
+              <div className="flex items-center gap-6">
+                <div className="w-12 h-12 bg-orange-500/10 rounded-full flex items-center justify-center animate-pulse">
+                  <Activity className="w-6 h-6 text-orange-500" />
+                </div>
+                <div>
+                  <p className="text-sm font-black text-orange-500 uppercase tracking-widest mb-1">Local Development Mode</p>
+                  <p className="text-xs text-orange-500/60 font-mono tracking-tight">SIMULATING_INTELLIGENCE: Subsystem Active</p>
+                </div>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={pathname}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="w-full max-w-6xl mx-auto"
-          >
-            {children}
-          </motion.div>
-        </AnimatePresence>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={pathname}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 10 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </main>
     </div>
   );

@@ -125,8 +125,8 @@ export default function ProjectRow({ repo, index }) {
              </span>
           )}
         </div>
-        <Link href={`/work/${repo.name}`} className="group-hover:text-accent transition-colors">
-          <h2 className="text-4xl md:text-5xl lg:text-[clamp(2.5rem,8vw,5rem)] font-display font-black text-text uppercase tracking-tighter mb-6 break-words leading-[0.9]">
+        <Link href={`/work/${repo.name}`} className="group-hover:text-accent transition-colors block w-full">
+          <h2 className="text-3xl md:text-5xl lg:text-[clamp(2rem,6vw,4rem)] font-display font-black text-text uppercase tracking-tighter mb-6 break-words leading-[0.95] max-w-full">
             {repo.name.replace(/-/g, ' ')}
           </h2>
         </Link>

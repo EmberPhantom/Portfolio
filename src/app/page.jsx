@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, Reorder } from 'framer-motion';
 import { ArrowUpRight, Github, Twitter, Linkedin, Mail } from 'lucide-react';
 import LiveStatus from '../components/ui/LiveStatus';
@@ -72,6 +72,16 @@ export default function Home() {
 // ==========================================
 
 function IntroWidget() {
+  const [intro, setIntro] = useState("Full Stack Architect & UI Engineer building systems that scale from first principles.");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/intelligence/intro')
+      .then(res => res.json())
+      .then(data => setIntro(data.intro))
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <div className="h-full flex flex-col justify-between">
       <div>
@@ -85,8 +95,8 @@ function IntroWidget() {
         <h2 className="text-3xl md:text-5xl font-display font-bold text-text mb-4 tracking-tight leading-none">
           Pranay<br />Chandra
         </h2>
-        <p className="text-text-muted text-base md:text-lg font-body leading-relaxed max-w-sm">
-          Full Stack Architect & UI Engineer building systems that scale from first principles.
+        <p className={`text-text-muted text-base md:text-lg font-body leading-relaxed max-w-sm transition-opacity duration-1000 ${loading ? 'opacity-40' : 'opacity-100'}`}>
+          {intro}
         </p>
       </div>
       
@@ -103,13 +113,21 @@ function IntroWidget() {
 }
 
 function StatsWidget() {
+  const [stats, setStats] = useState({ totalCommits: 'Refreshing...', totalStars: 0, topLanguages: 'Loading...' });
+
+  useEffect(() => {
+    fetch('/api/github/stats')
+      .then(res => res.json())
+      .then(data => setStats(data));
+  }, []);
+
   return (
     <div className="h-full flex flex-col justify-between group">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-sm font-mono text-text-muted uppercase tracking-widest bg-muted/20 px-3 py-1 rounded-full border border-muted/10">
           System Pulse
         </h3>
-        <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_var(--accent)] animate-pulse" />
+        <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.4)] animate-pulse" />
       </div>
       
       <div className="flex-1 flex flex-col justify-center">
@@ -119,11 +137,11 @@ function StatsWidget() {
       <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-muted/10">
         <div>
           <p className="text-[10px] text-text-muted uppercase tracking-[0.2em] mb-1">Total Commits</p>
-          <p className="text-2xl font-mono text-text tracking-tighter">1,432</p>
+          <p className="text-2xl font-mono text-text tracking-tighter">{stats.totalCommits.toLocaleString()}</p>
         </div>
         <div>
-          <p className="text-[10px] text-text-muted uppercase tracking-[0.2em] mb-1">Fuel Level</p>
-          <p className="text-2xl font-mono text-text tracking-tighter">∞ Cups</p>
+          <p className="text-[10px] text-text-muted uppercase tracking-[0.2em] mb-1">Public Stars</p>
+          <p className="text-2xl font-mono text-text tracking-tighter">{stats.totalStars}</p>
         </div>
       </div>
     </div>
