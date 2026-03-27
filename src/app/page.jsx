@@ -59,7 +59,7 @@ export default function Home() {
             value={widget}
             id={widget.id}
             drag={isMobile ? false : true}
-            className={`relative bg-surface border border-muted/20 rounded-[2.5rem] overflow-hidden shadow-2xl hover:border-accent/30 transition-colors interactive flex flex-col ${widget.span} min-h-[220px] ${!isMobile && 'cursor-grab active:cursor-grabbing'}`}
+            className={`relative glass border-muted/10 rounded-[2.5rem] overflow-hidden premium-shadow hover:border-accent/30 transition-all duration-500 interactive flex flex-col ${widget.span} min-h-[220px] ${!isMobile && 'cursor-grab active:cursor-grabbing'}`}
             whileHover={isMobile ? {} : { scale: 0.98, transition: { duration: 0.4, ease: "easeOut" } }}
             whileDrag={{ scale: 1.05, zIndex: 50, rotate: 1 }}
             dragTransition={{ bounceStiffness: 600, bounceDamping: 20 }}
