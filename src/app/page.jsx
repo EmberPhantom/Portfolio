@@ -16,6 +16,14 @@ const initialWidgets = [
 
 export default function Home() {
   const [widgets, setWidgets] = useState(initialWidgets);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
     <div className="p-6 md:p-12 lg:p-16 w-full max-w-[1400px] mx-auto flex flex-col justify-center relative min-h-[90vh]">
@@ -50,9 +58,10 @@ export default function Home() {
             key={widget.id}
             value={widget}
             id={widget.id}
-            className={`relative bg-surface border border-muted/20 rounded-[2.5rem] overflow-hidden shadow-2xl hover:border-accent/30 transition-colors interactive flex flex-col ${widget.span} min-h-[220px]`}
-            whileHover={{ scale: 0.98, transition: { duration: 0.4, ease: "easeOut" } }}
-            whileDrag={{ scale: 1.05, zIndex: 50, cursor: 'grabbing', rotate: 1 }}
+            drag={isMobile ? false : true}
+            className={`relative bg-surface border border-muted/20 rounded-[2.5rem] overflow-hidden shadow-2xl hover:border-accent/30 transition-colors interactive flex flex-col ${widget.span} min-h-[220px] ${!isMobile && 'cursor-grab active:cursor-grabbing'}`}
+            whileHover={isMobile ? {} : { scale: 0.98, transition: { duration: 0.4, ease: "easeOut" } }}
+            whileDrag={{ scale: 1.05, zIndex: 50, rotate: 1 }}
             dragTransition={{ bounceStiffness: 600, bounceDamping: 20 }}
           >
             {/* Subtle glow effect behind cards */}

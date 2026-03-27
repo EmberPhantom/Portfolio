@@ -1,9 +1,44 @@
-import { NextResponse } from 'next/server';
-import { Groq } from 'groq-sdk';
-
 export const dynamic = 'force-dynamic';
 
+// Use a shared data file for caching in production/development
+import fs from 'fs';
+import path from 'path';
+
+const CACHE_PATH = path.join(process.cwd(), 'src/data/intro_cache.json');
+
+function getCachedIntro() {
+  if (fs.existsSync(CACHE_PATH)) {
+    try {
+      return JSON.parse(fs.readFileSync(CACHE_PATH, 'utf8'));
+    } catch (e) {
+      return null;
+    }
+  }
+  return null;
+}
+
+function saveCachedIntro(intro) {
+  const dir = path.dirname(CACHE_PATH);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(CACHE_PATH, JSON.stringify({
+    intro,
+    timestamp: new Date().toISOString()
+  }));
+}
+
 export async function GET() {
+  const now = new Date();
+  const today = now.getDay(); // 0 is Sunday
+  const cache = getCachedIntro();
+
+  // If today is Sunday and the cache was updated on a different day, regenerate.
+  // Or if no cache exists.
+  const needsRefresh = !cache || (today === 0 && new Date(cache.timestamp).toDateString() !== now.toDateString());
+
+  if (!needsRefresh) {
+    return NextResponse.json({ intro: cache.intro, source: 'cache' });
+  }
+
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ intro: "Full Stack Architect & UI Engineer building systems that scale from first principles." });
@@ -26,10 +61,12 @@ export async function GET() {
       model: "llama-3.3-70b-versatile",
     });
 
-    const intro = completion.choices[0]?.message?.content || "Full Stack Architect & UI Engineer building systems that scale from first principles.";
+    const intro = (completion.choices[0]?.message?.content || "Full Stack Architect & UI Engineer building systems that scale from first principles.").replace(/"/g, '');
+    
+    saveCachedIntro(intro);
 
-    return NextResponse.json({ intro: intro.replace(/"/g, '') });
+    return NextResponse.json({ intro, source: 'intelligence-sync' });
   } catch (error) {
-    return NextResponse.json({ intro: "Full Stack Architect & UI Engineer building systems that scale from first principles." });
+    return NextResponse.json({ intro: cache?.intro || "Full Stack Architect & UI Engineer building systems that scale from first principles." });
   }
 }

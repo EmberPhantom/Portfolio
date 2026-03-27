@@ -27,12 +27,25 @@
 }
 
 :root {
-  /* Provide CSS variables for non-tailwind usage if needed */
+  /* Dark Theme (Default) */
   --bg: #0A0A0A;
   --surface: #141414;
   --accent: #F97316;
   --text: #FFFFFF;
   --text-muted: #A1A1AA;
+}
+
+:root.light {
+  /* Light Theme (Arctic Slate) */
+  --bg: #F8FAFC;
+  --surface: #FFFFFF;
+  --surface-hover: #F1F5F9;
+  --muted: #E2E8F0;
+  --text: #0F172A;
+  --text-muted: #64748B;
+  --accent: #EA580C;
+  --accent-hover: #C2410C;
+  --border: rgba(15, 23, 42, 0.08);
 }
 
 /* ===== Premium Utilities ===== */
