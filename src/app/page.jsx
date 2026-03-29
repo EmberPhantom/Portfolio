@@ -47,10 +47,10 @@ export default function Home() {
         </p>
       </motion.div>
 
-      <Reorder.Group 
+      <Reorder.Group
         axis="y"
-        values={widgets} 
-        onReorder={setWidgets} 
+        values={widgets}
+        onReorder={setWidgets}
         className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 auto-rows-min gap-4 md:gap-6"
       >
         {widgets.map((widget) => (
@@ -96,8 +96,8 @@ function IntroWidget() {
       <div>
         <div className="w-12 h-12 border border-muted/30 rounded-xl flex items-center justify-center mb-8 bg-bg shadow-lg shadow-accent/5">
           <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-text">
-            <rect x="8" y="4" width="6" height="32" rx="1" fill="currentColor"/>
-            <path d="M22 8C28.6274 8 34 13.3726 34 20C34 26.6274 28.6274 32 22 32" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+            <rect x="8" y="4" width="6" height="32" rx="1" fill="currentColor" />
+            <path d="M22 8C28.6274 8 34 13.3726 34 20C34 26.6274 28.6274 32 22 32" stroke="currentColor" stroke-width="6" stroke-linecap="round" />
             <circle cx="21" cy="20" r="3.5" className="fill-accent transition-colors duration-300" />
           </svg>
         </div>
@@ -108,7 +108,7 @@ function IntroWidget() {
           {intro}
         </p>
       </div>
-      
+
       <div className="flex flex-wrap gap-4 mt-8">
         <Link href="/contact" className="px-8 py-4 bg-text text-bg font-bold rounded-full hover:bg-accent hover:text-bg transition-all transform hover:-translate-y-1 shadow-xl text-sm uppercase tracking-wider">
           Initiate Contact
@@ -138,7 +138,7 @@ function StatsWidget() {
         </h3>
         <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.4)] animate-pulse" />
       </div>
-      
+
       <div className="flex-1 flex flex-col justify-center">
         <LiveStatus />
       </div>
@@ -160,8 +160,8 @@ function StatsWidget() {
 function SocialsWidget() {
   const socials = [
     { icon: Github, href: 'https://github.com/EmberPhantom', name: 'GitHub' },
-    { icon: Linkedin, href: '#', name: 'LinkedIn' },
-    { icon: Twitter, href: '#', name: 'Twitter' },
+    { icon: Linkedin, href: 'https://www.linkedin.com/in/pranay-chandra-wdp', name: 'LinkedIn' },
+    { icon: Twitter, href: 'https://x.com/_PranayChandra_', name: 'Twitter' },
     { icon: Mail, href: 'mailto:pranaychandra751@gmail.com', name: 'Email' },
   ];
 
@@ -185,7 +185,7 @@ function FeaturedProjectWidget() {
     <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop')] bg-cover bg-center overflow-hidden group">
       {/* Dark overlay that fades strictly on hover */}
       <div className="absolute inset-0 bg-bg/80 backdrop-blur-md group-hover:bg-bg/40 group-hover:backdrop-blur-0 transition-all duration-700 z-0" />
-      
+
       <div className="relative z-10 w-full h-full p-8 flex flex-col justify-between">
         <div className="flex justify-between items-start">
           <span className="px-3 py-1 bg-surface/50 text-text text-xs font-bold tracking-widest uppercase rounded-full backdrop-blur-md border border-muted/50">
@@ -198,7 +198,7 @@ function FeaturedProjectWidget() {
 
         <div className="mt-auto transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
           <h3 className="text-4xl font-black text-text mb-3 font-display tracking-tight leading-none">
-            Ember<br/>OS.
+            Ember<br />OS.
           </h3>
           <p className="text-text-muted text-sm font-body mb-4 line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
             Built from first principles. Shipped from conviction.
