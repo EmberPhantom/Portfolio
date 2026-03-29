@@ -5,15 +5,15 @@
   --animate-pulse-ring: pulse-ring 2s ease-out infinite;
   --animate-scan: scanning 8s linear infinite;
 
-  /* ===== Color Palette ===== */
-  --color-bg: #0A0A0A;
-  --color-surface: #141414;
-  --color-surface-hover: #1e1e1e;
-  --color-muted: #3F3F46;
-  --color-text: #FFFFFF;
-  --color-text-muted: #A1A1AA;
-  --color-accent: #F97316;
-  --color-accent-hover: #FB923C;
+  /* ===== Dynamic Color Palette Mapping ===== */
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-muted: var(--muted);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
 }
 
 @keyframes pulse-ring {
@@ -31,6 +31,7 @@
   --bg: #0A0A0A;
   --surface: #141414;
   --surface-hover: #1e1e1e;
+  --muted: #3F3F46;
   --accent: #F97316;
   --accent-hover: #FB923C;
   --text: #ffffff;
@@ -44,20 +45,21 @@
 }
 
 :root.light {
-  /* Light Theme (Soft Arctic) */
-  --bg: #F1F5F9;
-  --surface: #fdfdfd;
-  --surface-hover: #f1f5f9;
+  /* "Bone & Onyx" Studio Theme (High Contrast) */
+  --bg: #F2F2F2; /* Clean Bone */
+  --surface: #ffffff; 
+  --surface-hover: #efeff1;
+  --muted: #e5e7eb;
   --accent: #F97316;
-  --accent-hover: #EA580C;
-  --text: #0F172A;
-  --text-muted: #475569;
-  --border: rgba(15, 23, 42, 0.06);
+  --accent-hover: #1A1A1A; /* Inky hover */
+  --text: #1A1A1A; /* Deep Onyx */
+  --text-muted: #6b7280;
+  --border: rgba(15, 23, 42, 0.05);
 
-  /* Decorative Glows (Arctic Blue/Silver washes) */
-  --glow-1: rgba(59, 130, 246, 0.08); /* Soft Tech Blue */
-  --glow-2: rgba(148, 163, 184, 0.08); /* Silver Mist */
-  --glass-bg: rgba(255, 255, 255, 0.6);
+  /* Decorative Glows (Soft Ink washes) */
+  --glow-1: rgba(0, 0, 0, 0.02); 
+  --glow-2: rgba(0, 0, 0, 0.04);
+  --glass-bg: rgba(255, 255, 255, 0.5);
 }
 
 /* ===== Premium Utilities ===== */
