@@ -1,8 +1,10 @@
 export const dynamic = 'force-dynamic';
 
 // Use a shared data file for caching in production/development
+import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import Groq from 'groq-sdk';
 
 const CACHE_PATH = path.join(process.cwd(), 'src/data/intro_cache.json');
 
@@ -39,7 +41,7 @@ export async function GET() {
     return NextResponse.json({ intro: cache.intro, source: 'cache' });
   }
 
-  const apiKey = process.env.GROQ_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY || process.env.NEXT_PUBLIC_GROQ_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ intro: "Full Stack Architect & UI Engineer building systems that scale from first principles." });
   }

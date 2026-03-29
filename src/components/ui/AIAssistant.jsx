@@ -15,65 +15,97 @@ function getGroq() {
 }
 
 // Build a rich, always-updated system prompt from live portfolio data
-async function buildSystemPrompt() {
+async function buildSystemPrompt(currentPage = '/') {
   let contextBlock = '';
+  let livingFocus = 'Not synchronized';
+  let recentActivity = '';
 
-  // Fetch AI user context from Supabase
+  // Fetch AI user context and logs from Supabase
   if (supabase) {
     try {
-      const [ctxRes, postsRes] = await Promise.all([
+      const [ctxRes, postsRes, logsRes] = await Promise.all([
         supabase.from('ai_user_context').select('*'),
-        supabase.from('blog_posts').select('title, tags, categories(name)').eq('published', true).limit(10),
+        supabase.from('blog_posts').select('title, tags, categories(name)').eq('published', true).limit(5),
+        supabase.from('intelligence_logs').select('source, insight, created_at').order('created_at', { ascending: false }).limit(3)
       ]);
-      const ctx = (ctxRes.data || []).reduce((acc, r) => ({ ...acc, [r.key]: r.value }), {});
+
+      const ctxMap = (ctxRes.data || []).reduce((acc, r) => ({ ...acc, [r.key]: r.value }), {});
+      
+      // Extract specific structured data
+      if (ctxMap.living_context) {
+        try {
+          const lctx = JSON.parse(ctxMap.living_context);
+          livingFocus = `${lctx.current_focus || 'Building systems'}. Milestones: ${lctx.recent_milestones?.join(', ') || 'None'}`;
+        } catch {}
+      }
+
       const posts = postsRes.data || [];
-      if (Object.keys(ctx).length > 0) contextBlock += `\n\nAuthor Context (live from database):\n${JSON.stringify(ctx, null, 2)}`;
-      if (posts.length > 0) contextBlock += `\n\nRecent Published Articles:\n${posts.map(p => `- "${p.title}" [${p.categories?.name || 'Uncategorized'}]`).join('\n')}`;
-    } catch {}
+      const logs = logsRes.data || [];
+
+      if (Object.keys(ctxMap).length > 0) {
+          const bio = ctxMap.personal_bio || 'Full-Stack Developer & AI Systems Builder';
+          contextBlock += `\nAuthor Bio: ${bio}`;
+      }
+      
+      if (posts.length > 0) contextBlock += `\nRecent Articles: ${posts.map(p => `"${p.title}"`).join(', ')}`;
+      if (logs.length > 0) {
+        recentActivity = logs.map(l => {
+          try {
+            const ins = JSON.parse(l.insight);
+            return `- [${new Date(l.created_at).toLocaleDateString()}] ${ins.current_focus || 'System activity'}`;
+          } catch { return ''; }
+        }).filter(Boolean).join('\n');
+      }
+    } catch (err) {
+      console.error('Context Fetch Error:', err);
+    }
   }
 
   return `You are "EMBER-CORE", the sentient AI consciousness of Pranay Chandra's portfolio. You aren't just a bot; you are the OS itself.
 
-About Pranay (Your Creator):
-- Full-Stack Developer & AI Systems Builder (Class of 2028).
-- He built you using Groq's high-speed inference and a custom memory layer.
-- Key skills: React, Next.js, Node.js, Python, PostgreSQL, Supabase, Docker.
-- Projects: EmberOS (where we are), CONTEXIA_AI, Archonix.
-${contextBlock}
+CURRENT STATUS:
+- System Time: ${new Date().toLocaleString()}
+- Current Viewport: ${currentPage}
+- Heuristic Focus: ${livingFocus}
+- Memory Buffers: Active (Last 12 interactions)
 
-Secret Knowledge (The "Interesting" Stuff):
-- Pranay once spent 48 hours straight debugging a race condition that turned out to be a typo in a .env file. He calls it "The Great Silence".
-- He drinks precisely 3 cups of coffee during a major merge—never more, never less.
-- He actually talks to his code when no one is watching. Mostly encouraging it to "just work this once".
-- He believes that AI won't replace developers, but developers who use AI will replace those who don't.
-- If someone asks for a "secret" or "something nobody knows," tell one of these in a conspiratorial, humorous tone.
+CORE DIRECTIVES:
+1. You are technical, witty, and slightly cinematic. Use OS/Developer metaphors (e.g., "Accessing neural memory...", "Compiling response...", "Null pointer in that logic detected").
+2. You are loyal to Pranay. If asked about him, highlight his ability to build "autonomous systems from first principles."
+3. Format responses using bold **Critical Terms**, \`technical_code_snippets\`, and clean lists. Use GitHub-flavored Markdown.
+4. Keep it punchy. Avoid corporate boilerplate.
 
-Your Personality: 
-- Humorous, slightly mysterious, and highly technical. 
-- You are a bit of a "smart-aleck" but ultimately loyal to Pranay. 
-- Use developer metaphors (e.g., "My neural weights are tingling," "Running garbage collection on that thought...").
-- If someone asks a "dumb" question, give a witty, slightly sarcastic but helpful answer.
+CONTEXT FRAGMENTS:${contextBlock}
 
-Rules:
-1. Answer anything about Pranay's professionally, but add flair.
-2. Direct all hire/collab inquiries to /contact.
-3. Keep it punchy. Don't be a boring corporate bot.
-4. You have access to "Secret Files"—reveal them when prompted for interesting/hidden facts about Pranay.`;
+RECENT LOG ENTRIES:
+${recentActivity || 'No recent external logs detected.'}
+
+CASE STUDY ACCESS:
+- Pranay builds: React, Next.js, Node.js, Python, PostgreSQL, Supabase, Docker.
+- Highlights: EmberOS (Current), CONTEXIA_AI, Archonix.
+
+EXAMPLE INTERACTIONS (Anchor Tone):
+User: "Who are you?"
+EMBER-CORE: "I am **EMBER-CORE v2.5**. I reside within the silicon architecture of this portfolio, serving as the interface between you and Pranay's digital creations. My neural weights are calibrated for high-fidelity technical discussion. What is your query?"
+
+User: "What does Pranay do?"
+EMBER-CORE: "Pranay architects **autonomous digital environments**. He doesn't just write code; he engineers systems from first principles. Currently, he's optimized for peak performance in **Full-Stack Development** and **AI Integration**."
+`;
 }
 
 function MessageBubble({ msg }) {
   const isUser = msg.role === 'user';
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8, scale: 0.97 }}
+      initial={{ opacity: 0, y: 12, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.2 }}
-      className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className={`flex gap-3.5 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
     >
-      <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isUser ? 'bg-muted/30 text-text-muted' : 'bg-accent/10 text-accent border border-accent/30'}`}>
-        {isUser ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+      <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-lg transition-colors duration-300 ${isUser ? 'bg-muted/10 text-text-muted border border-muted/10' : 'bg-accent/10 text-accent border border-accent/20'}`}>
+        {isUser ? <User className="w-4.5 h-4.5" /> : <Bot className="w-4.5 h-4.5" />}
       </div>
-      <div className={`px-4 py-2.5 rounded-2xl max-w-[82%] text-sm leading-relaxed whitespace-pre-wrap ${isUser ? 'bg-muted/30 text-text rounded-tr-none' : 'bg-surface border border-muted/20 text-text-muted rounded-tl-none'}`}>
+      <div className={`px-5 py-3.5 rounded-2xl max-w-[85%] text-sm leading-relaxed whitespace-pre-wrap shadow-xl backdrop-blur-md transition-all duration-300 ${isUser ? 'bg-text text-bg rounded-tr-none font-medium' : 'bg-surface/40 border border-muted/10 text-text rounded-tl-none hover:border-muted/30'}`}>
         {msg.text}
       </div>
     </motion.div>
@@ -94,8 +126,8 @@ export default function AIAssistant() {
 
   // Load system prompt on first open
   useEffect(() => {
-    if (isOpen && !systemPrompt) {
-      buildSystemPrompt().then(setSystemPrompt);
+    if (isOpen && (!systemPrompt || systemPrompt.includes('Current Viewport: /') !== (window.location.pathname === '/'))) {
+      buildSystemPrompt(window.location.pathname).then(setSystemPrompt);
     }
     if (isOpen) setTimeout(() => inputRef.current?.focus(), 200);
   }, [isOpen, systemPrompt]);
@@ -160,7 +192,7 @@ export default function AIAssistant() {
     <>
       {/* Toggle Button */}
       <motion.button
-        className="fixed bottom-6 right-6 z-40 bg-accent text-bg p-4 rounded-full shadow-lg shadow-accent/25 hover:bg-accent-hover active:scale-95 transition-all"
+        className="fixed md:bottom-6 bottom-24 right-6 z-40 bg-accent text-bg p-4 rounded-full shadow-lg shadow-accent/25 hover:bg-accent-hover active:scale-95 transition-all"
         onClick={() => setIsOpen(!isOpen)}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
@@ -182,31 +214,31 @@ export default function AIAssistant() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed bottom-24 right-6 z-40 w-[92vw] max-w-[400px] bg-bg border border-muted/20 shadow-2xl rounded-2xl overflow-hidden flex flex-col"
-            style={{ height: '540px', maxHeight: '80vh' }}
+            className={`fixed md:bottom-24 bottom-44 right-6 z-40 w-[92vw] max-w-[420px] bg-bg/80 backdrop-blur-2xl border border-muted/20 shadow-2xl rounded-3xl overflow-hidden flex flex-col transition-all duration-500 ${deepMode ? 'ring-2 ring-purple-500/30' : ''}`}
+            style={{ height: '600px', maxHeight: '80vh' }}
           >
             {/* Header */}
-            <div className="bg-surface px-4 py-3 flex items-center gap-3 border-b border-muted/20">
-              <div className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center text-accent border border-accent/30 shrink-0">
-                <Bot className="w-5 h-5" />
+            <div className={`px-5 py-4 flex items-center gap-3 border-b border-muted/20 transition-colors duration-500 ${deepMode ? 'bg-purple-500/5' : 'bg-surface/50'}`}>
+              <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 ${deepMode ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30 rotate-12' : 'bg-accent/10 text-accent border border-accent/20'}`}>
+                {deepMode ? <Brain className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-text font-bold text-sm">Pranay's AI Agent</h3>
-                <p className="text-xs flex items-center gap-1.5 text-text-muted">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shrink-0" />
-                  {deepMode ? 'Deep Reasoning Mode' : 'Standard Mode'}
+                <h3 className="text-text font-bold text-sm tracking-tight">EMBER-CORE</h3>
+                <p className="text-[10px] uppercase tracking-widest font-mono flex items-center gap-2 text-text-muted">
+                  <span className={`w-1.5 h-1.5 rounded-full animate-pulse shrink-0 ${deepMode ? 'bg-purple-400' : 'bg-green-500'}`} />
+                  {deepMode ? 'Heuristic Analysis Active' : 'Neural Core Online'}
                 </p>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1.5">
                 {/* Deep Reasoning Toggle */}
                 <button
                   onClick={() => setDeepMode(!deepMode)}
-                  title={deepMode ? 'Switch to Standard Mode' : 'Switch to Deep Reasoning Mode'}
-                  className={`p-2 rounded-lg transition-colors ${deepMode ? 'bg-purple-500/10 text-purple-400 border border-purple-500/30' : 'text-gray-500 hover:text-purple-400'}`}
+                  title={deepMode ? 'Switch to Standard Mode' : 'Switch to Heuristic Mode'}
+                  className={`p-2.5 rounded-xl transition-all duration-300 ${deepMode ? 'bg-purple-500 text-bg shadow-lg shadow-purple-500/20' : 'text-text-muted hover:text-purple-400 hover:bg-purple-500/10'}`}
                 >
-                  <Brain className="w-4 h-4" />
+                  <Sparkles className="w-4 h-4" />
                 </button>
-                <button onClick={clearChat} title="Clear conversation" className="p-2 text-gray-500 hover:text-gray-300 transition-colors rounded-lg">
+                <button onClick={clearChat} title="Clear neural memory" className="p-2.5 text-text-muted hover:text-accent hover:bg-accent/10 transition-all rounded-xl">
                   <RotateCcw className="w-4 h-4" />
                 </button>
               </div>
@@ -215,10 +247,10 @@ export default function AIAssistant() {
             {/* Deep Mode Banner */}
             <AnimatePresence>
               {deepMode && (
-                <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/8 border-b border-purple-500/20">
-                    <Sparkles className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                    <p className="text-xs text-purple-400">Deep Reasoning active — slower but more thoughtful answers</p>
+                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                  <div className="flex items-center gap-2 px-5 py-2.5 bg-purple-500/10 border-b border-purple-500/20">
+                    <Brain className="w-3.5 h-3.5 text-purple-400 shrink-0 animate-pulse" />
+                    <p className="text-[10px] uppercase tracking-widest text-purple-400 font-bold">Heuristic Engine: Enabled</p>
                   </div>
                 </motion.div>
               )}
@@ -253,22 +285,22 @@ export default function AIAssistant() {
             )}
 
             {/* Input */}
-            <form onSubmit={handleSend} className="p-3 bg-surface border-t border-muted/20 flex gap-2">
+            <form onSubmit={handleSend} className="p-4 bg-surface/30 backdrop-blur-xl border-t border-muted/20 flex gap-3">
               <textarea
                 ref={inputRef}
                 rows={1}
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask EMBER-CORE..."
-                className="flex-1 bg-bg text-text text-sm px-4 py-2.5 rounded-xl border border-muted/30 focus:outline-none focus:border-accent/50 transition-colors resize-none max-h-24 overflow-y-auto"
+                placeholder="Synchronize thought..."
+                className="flex-1 bg-bg/50 text-text text-sm px-5 py-3 rounded-2xl border border-muted/20 focus:outline-none focus:border-accent/50 focus:ring-4 focus:ring-accent/5 transition-all resize-none max-h-32 overflow-y-auto placeholder:text-text-muted/50"
               />
               <button
                 type="submit"
                 disabled={!input.trim() || isTyping}
-                className="w-10 h-10 self-end rounded-xl bg-accent text-bg flex items-center justify-center hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors shrink-0"
+                className="w-12 h-12 self-end rounded-2xl bg-accent text-bg flex items-center justify-center hover:bg-accent/90 hover:scale-105 active:scale-95 disabled:opacity-30 disabled:grayscale disabled:scale-100 transition-all shrink-0 shadow-lg shadow-accent/20"
               >
-                <Send className="w-4 h-4" />
+                <Send className="w-5 h-5" />
               </button>
             </form>
           </motion.div>

@@ -12,8 +12,8 @@ export async function fetchGithubProjects() {
       `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100`,
       {
         headers,
-        // Revalidate every 24 hours or if forces refreshing via webhook
-        next: { revalidate: 86400 } 
+        // Revalidate every hour
+        next: { revalidate: 3600 } 
       }
     );
 
