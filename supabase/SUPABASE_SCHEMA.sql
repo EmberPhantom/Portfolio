@@ -1,5 +1,5 @@
 -- ========================================================
--- EmberOS Database Schema
+-- EmberOS Database Schema (v1.5 Consolidated)
 -- Run these SQL commands in your Supabase SQL Editor
 -- ========================================================
 
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS oauth_tokens (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 5. Visitor Logs (Analytics)
+-- 5. Visitor Logs (Telemetry)
 CREATE TABLE IF NOT EXISTS visitor_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   page TEXT,
@@ -60,8 +60,8 @@ CREATE TABLE IF NOT EXISTS visitor_logs (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 6. Messages (Contact Form)
-CREATE TABLE IF NOT EXISTS messages (
+-- 6. Contact Messages (Lead Gen)
+CREATE TABLE IF NOT EXISTS contact_messages (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   email TEXT NOT NULL,
@@ -71,33 +71,80 @@ CREATE TABLE IF NOT EXISTS messages (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 7. Intelligence Metadata (System Scoping)
+CREATE TABLE IF NOT EXISTS intelligence_meta (
+  key TEXT PRIMARY KEY,
+  value JSONB NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 8. Identity Mappings (AI Persona Sync)
+CREATE TABLE IF NOT EXISTS identity_mappings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  category TEXT NOT NULL CHECK (category IN ('person', 'project', 'location', 'entity')),
+  description TEXT NOT NULL,
+  mapping TEXT NOT NULL,
+  metadata JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 9. Intelligence Logs (AI Activity History)
+CREATE TABLE IF NOT EXISTS intelligence_logs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  source TEXT NOT NULL,
+  content TEXT NOT NULL,
+  insight TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- ========================================================
--- Security Policies (RLS)
+-- Row-Level Security (RLS) Policies
 -- ========================================================
 
--- Enable RLS
+-- Enable RLS for all tables
 ALTER TABLE blog_posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE visitor_logs ENABLE ROW LEVEL SECURITY;
-ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE contact_messages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ai_user_context ENABLE ROW LEVEL SECURITY;
 ALTER TABLE oauth_tokens ENABLE ROW LEVEL SECURITY;
+ALTER TABLE intelligence_meta ENABLE ROW LEVEL SECURITY;
+ALTER TABLE identity_mappings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE intelligence_logs ENABLE ROW LEVEL SECURITY;
 
--- Public Access
-CREATE POLICY "Public read categories" ON categories FOR SELECT USING (true);
-CREATE POLICY "Public read published posts" ON blog_posts FOR SELECT USING (published = true);
-CREATE POLICY "Public insert logs" ON visitor_logs FOR INSERT WITH CHECK (true);
-CREATE POLICY "Public read logs" ON visitor_logs FOR SELECT USING (true);
-CREATE POLICY "Public insert messages" ON messages FOR INSERT WITH CHECK (true);
+-- ✅ Public Read Access: Allow anyone to view published blog posts and categories
+CREATE POLICY "Public Read Access" ON categories FOR SELECT USING (true);
+CREATE POLICY "Public Read Access" ON blog_posts FOR SELECT USING (published = true);
 
--- Admin Access (Requires Auth)
--- Note: Replace with your specific admin UID or disable RLS for local dev
--- ALTER TABLE blog_posts DISABLE ROW LEVEL SECURITY;
+-- ✅ Public Write-Only Access: Allow tracking and messages, but hide the data
+CREATE POLICY "Public Insert Access" ON visitor_logs FOR INSERT WITH CHECK (true);
+CREATE POLICY "Public Insert Access" ON contact_messages FOR INSERT WITH CHECK (true);
+
+-- ✅ Admin All-Access: Authenticated users (Administrators) can do everything
+CREATE POLICY "Admin All Access" ON blog_posts FOR ALL TO authenticated USING (true);
+CREATE POLICY "Admin All Access" ON categories FOR ALL TO authenticated USING (true);
+CREATE POLICY "Admin All Access" ON visitor_logs FOR ALL TO authenticated USING (true);
+CREATE POLICY "Admin All Access" ON contact_messages FOR ALL TO authenticated USING (true);
+CREATE POLICY "Admin All Access" ON ai_user_context FOR ALL TO authenticated USING (true);
+CREATE POLICY "Admin All Access" ON oauth_tokens FOR ALL TO authenticated USING (true);
+CREATE POLICY "Admin All Access" ON intelligence_meta FOR ALL TO authenticated USING (true);
+CREATE POLICY "Admin All Access" ON identity_mappings FOR ALL TO authenticated USING (true);
+CREATE POLICY "Admin All Access" ON intelligence_logs FOR ALL TO authenticated USING (true);
 
 -- ========================================================
--- Functions
+-- Initial Data & Functions
 -- ========================================================
 
+-- Seed Intelligence Metadata
+INSERT INTO intelligence_meta (key, value) 
+VALUES 
+  ('whitelisted_drive_folders', '[]'),
+  ('whitelisted_photo_albums', '[]'),
+  ('github_sync_enabled', 'true')
+ON CONFLICT (key) DO NOTHING;
+
+-- Views Counter Function
 CREATE OR REPLACE FUNCTION increment_views(row_id UUID)
 RETURNS VOID AS $$
 BEGIN

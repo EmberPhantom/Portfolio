@@ -19,11 +19,17 @@ export default function DashboardLayout({ children }) {
       return;
     }
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session && pathname !== "/dashboard/login") router.push("/dashboard/login");
-      else setSession(session);
-      setLoading(false);
-    });
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        if (!session && pathname !== "/dashboard/login") router.push("/dashboard/login");
+        else setSession(session);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.warn("Auth session retrieval error:", err.message);
+        if (pathname !== "/dashboard/login") router.push("/dashboard/login");
+        setLoading(false);
+      });
 
     const {
       data: { subscription },
@@ -84,7 +90,7 @@ export default function DashboardLayout({ children }) {
             <div className="w-12 h-12 bg-accent/10 border border-accent/20 rounded-2xl flex items-center justify-center shadow-lg shadow-accent/5">
                <svg width="28" height="28" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <rect x="8" y="2" width="6" height="36" rx="1.5" fill="currentColor" className="text-white"/>
-                  <path d="M22 6C30.2843 6 37 12.7157 37 21C37 29.2843 30.2843 36 22 36" stroke="currentColor" stroke-width="5" stroke-linecap="round" className="text-white"/>
+                  <path d="M22 6C30.2843 6 37 12.7157 37 21C37 29.2843 30.2843 36 22 36" stroke="currentColor" strokeWidth="5" strokeLinecap="round" className="text-white"/>
                   <circle cx="21" cy="21" r="4" fill="currentColor" className="text-accent animate-pulse"/>
                </svg>
             </div>

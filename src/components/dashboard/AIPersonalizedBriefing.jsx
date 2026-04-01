@@ -103,7 +103,7 @@ export default function AIPersonalizedBriefing() {
               {insight.suggested_actions?.map((action, i) => (
                 <motion.button 
                   key={i}
-                  whileHover={{ x: 8, backgroundColor: 'rgba(255,255,255,0.05)' }}
+                  whileHover={{ x: 8, backgroundColor: '#ffffff0d' }}
                   className="w-full flex items-center justify-between p-4 bg-white/3 border border-white/5 rounded-2xl text-left transition-all group border-transparent hover:border-accent/20"
                 >
                   <span className="text-xs text-text/90 font-bold group-hover:text-accent transition-colors">{action}</span>

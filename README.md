@@ -48,7 +48,7 @@ Copy `.env.example` to `.env.local` and fill in your keys:
 - **Google Cloud**: Client ID/Secret for Photos integration
 
 ### 3. Database Setup
-Run the SQL commands provided in [SUPABASE_SCHEMA.sql](SUPABASE_SCHEMA.sql) in your Supabase SQL Editor to create the necessary tables and policies.
+Run the SQL commands provided in [supabase/SUPABASE_SCHEMA.sql](supabase/SUPABASE_SCHEMA.sql) in your Supabase SQL Editor to create the necessary tables and policies.
 
 ### 4. Run Locally
 ```bash

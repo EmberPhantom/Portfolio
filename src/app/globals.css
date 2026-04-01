@@ -42,6 +42,11 @@
   --glow-1: rgba(249, 115, 22, 0.05);
   --glow-2: rgba(249, 115, 22, 0.1);
   --glass-bg: rgba(20, 20, 20, 0.4);
+
+  /* Forge System Colors */
+  --forge-black: #050505;
+  --forge-surface: #0a0a0a;
+  --forge-muted: #1c1c1c;
 }
 
 :root.light {
@@ -116,4 +121,54 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
 .interactive { cursor: none !important; }
+
+/* ===== Chat Bot Enrichment Styles ===== */
+.markdown-content { line-height: 1.6; }
+.markdown-content p { margin-bottom: 1rem; }
+.markdown-content p:last-child { margin-bottom: 0; }
+.markdown-content ul, .markdown-content ol { margin: 1rem 0; padding-left: 1.5rem; }
+.markdown-content li { margin-bottom: 0.5rem; }
+.markdown-content code {
+  background: rgba(249, 115, 22, 0.1);
+  color: var(--accent);
+  padding: 0.2rem 0.4rem;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.9em;
+}
+.markdown-content pre {
+  background: rgba(20, 20, 20, 0.6);
+  border: 1px solid var(--border);
+  padding: 1.25rem;
+  border-radius: 1rem;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+}
+.markdown-content pre code { background: transparent; padding: 0; color: var(--text); font-size: 0.85rem; }
+.markdown-content h1, .markdown-content h2, .markdown-content h3 {
+  color: var(--text);
+  font-weight: 700;
+  margin: 1.5rem 0 1rem;
+  letter-spacing: -0.02em;
+}
+
+.mermaid-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 150px;
+  background: rgba(20, 20, 20, 0.4);
+  backdrop-filter: blur(10px);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  border: 1px solid var(--border);
+}
+
+.mermaid-container svg { max-width: 100%; height: auto !important; }
+.mermaid-container .label { color: var(--text) !important; font-family: inherit !important; }
+.mermaid-container .node rect, .mermaid-container .node circle { 
+  fill: var(--surface) !important; 
+  stroke: var(--accent) !important; 
+  stroke-width: 1.5px !important;
+}
 

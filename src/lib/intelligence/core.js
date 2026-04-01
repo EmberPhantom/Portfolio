@@ -133,7 +133,7 @@ export async function syncIntelligence() {
   const drive = await fetchDriveInsights(scoping.whitelisted_drive_folders);
 
   // 3. Reflect & Synthesize with AI
-  const groq = new Groq({ apiKey: process.env.NEXT_PUBLIC_GROQ_API_KEY || process.env.GROQ_API_KEY, dangerouslyAllowBrowser: true });
+  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
   
   const prompt = `You are a Person Context Engine. Analyze the following digital activity logs and generate a concise summary of what Pranay Chandra is currently focusing on in his life and career.
   

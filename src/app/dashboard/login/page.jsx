@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { supabase } from '../../../lib/supabase';
 import { useRouter } from 'next/navigation';
 import { Lock } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function DashboardLogin() {
   const [email, setEmail] = useState('');
@@ -36,11 +37,21 @@ export default function DashboardLogin() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-20 p-8 bg-forge-surface border border-forge-muted/30 rounded-2xl shadow-2xl relative z-10 w-full">
+    <div className="min-h-screen bg-forge-black flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Ambient Background Glows */}
+      <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-accent/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-accent/5 rounded-full blur-[120px] pointer-events-none" />
+      
+      <motion.div 
+        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="max-w-md w-full glass p-10 rounded-[2.5rem] premium-shadow border-muted/20 relative z-10"
+      >
       <div className="w-16 h-16 bg-orange-500/10 border border-orange-500/30 rounded-full flex items-center justify-center mx-auto mb-6">
-        <Lock className="w-8 h-8 text-orange-500" />
+        <Lock className="w-8 h-8 text-accent animate-pulse" />
       </div>
-      <h2 className="text-3xl font-display font-bold mb-6 text-white text-center uppercase tracking-tight">Admin Override</h2>
+      <h2 className="text-3xl font-display font-bold mb-6 text-text text-center uppercase tracking-tight">Admin Override</h2>
       
       {error && (
         <div className="bg-red-500/10 text-red-500 p-3 rounded-lg mb-6 text-sm border border-red-500/20 text-center font-mono">
@@ -74,11 +85,12 @@ export default function DashboardLogin() {
         <button 
           type="submit" 
           disabled={loading}
-          className="mt-4 w-full bg-white text-forge-black font-bold py-3 rounded-xl hover:bg-orange-500 transition-colors disabled:opacity-50"
+          className="mt-6 w-full bg-text text-bg font-bold py-4 rounded-2xl hover:bg-accent hover:text-bg transition-all transform hover:-translate-y-1 shadow-xl disabled:opacity-50 uppercase tracking-widest text-xs"
         >
           {loading ? 'AUTHENTICATING...' : 'INITIALIZE SESSION'}
         </button>
       </form>
+      </motion.div>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -29,6 +30,11 @@ export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const { toggleTerminalMode } = useTerminal();
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <>
@@ -44,7 +50,7 @@ export default function Navbar() {
             <div className="w-10 h-10 border border-muted/30 rounded-lg flex items-center justify-center bg-surface group-hover/logo:border-accent group-hover/logo:shadow-[0_0_15px_var(--accent)] transition-all duration-300">
               <svg width="24" height="24" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-text">
                 <rect x="8" y="4" width="6" height="32" rx="1" fill="currentColor"/>
-                <path d="M22 8C28.6274 8 34 13.3726 34 20C34 26.6274 28.6274 32 22 32" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+                <path d="M22 8C28.6274 8 34 13.3726 34 20C34 26.6274 28.6274 32 22 32" stroke="currentColor" strokeWidth="6" strokeLinecap="round"/>
                 <circle cx="21" cy="20" r="3.5" className="fill-accent transition-colors duration-300" />
               </svg>
             </div>
@@ -109,12 +115,14 @@ export default function Navbar() {
               onClick={toggleTheme}
               className="p-3 bg-muted/10 rounded-xl hover:bg-muted/30 transition-colors"
               title="Toggle Theme"
-              aria-label={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              aria-label={!mounted ? "Toggle Theme" : (theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode")}
             >
-              {theme === "dark" ? (
-                <Sun className="w-5 h-5 text-text-muted" />
-              ) : (
-                <Moon className="w-5 h-5 text-text-muted" />
+              {mounted && (
+                theme === "dark" ? (
+                  <Sun className="w-5 h-5 text-text-muted" />
+                ) : (
+                  <Moon className="w-5 h-5 text-text-muted" />
+                )
               )}
             </button>
           </div>

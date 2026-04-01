@@ -3,29 +3,25 @@ import { motion } from 'framer-motion';
 import { Activity, Code, Music } from 'lucide-react';
 
 export default function LiveStatus() {
-  const [status, setStatus] = useState({ type: 'coding', text: 'Building FORGE OS v2.0', detail: 'React & Tailwind' });
-  const wakatimeKey = process.env.NEXT_PUBLIC_WAKATIME_API_KEY;
-  const spotifyKey = process.env.NEXT_PUBLIC_SPOTIFY_API_KEY;
+  const [status, setStatus] = useState({ type: 'coding', text: 'Initializing System...', detail: 'Neural Link' });
 
   useEffect(() => {
-    // If user provides API keys later, they can hook up actual fetch calls here.
-    // For free deployment without keys yet, we simulate a live status or show static fallback.
-    if (!wakatimeKey && !spotifyKey) {
-      const statuses = [
-        { type: 'coding', text: 'Building EmberOS v2.5', detail: 'React & Tailwind' },
-        { type: 'music', text: 'Listening to Synthwave', detail: 'Spotify' },
-        { type: 'system', text: 'System Check Normal', detail: 'Uptime: 99.9%' }
-      ];
-      let i = 0;
-      const interval = setInterval(() => {
-        i = (i + 1) % statuses.length;
-        setStatus(statuses[i]);
-      }, 10000);
-      return () => clearInterval(interval);
+    async function fetchStatus() {
+      try {
+        const res = await fetch('/api/status');
+        const data = await res.json();
+        if (data && data.text) {
+          setStatus(data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch live status:', err);
+      }
     }
 
-    // Example actual fetch logic if keys exist (User will implement their own proxy/edge function to avoid CORS/leaks)
-  }, [wakatimeKey, spotifyKey]);
+    fetchStatus();
+    const interval = setInterval(fetchStatus, 300000); // Update every 5 mins
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <motion.div 

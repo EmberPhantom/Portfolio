@@ -97,7 +97,7 @@ function IntroWidget() {
         <div className="w-12 h-12 border border-muted/30 rounded-xl flex items-center justify-center mb-8 bg-bg shadow-lg shadow-accent/5">
           <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-text">
             <rect x="8" y="4" width="6" height="32" rx="1" fill="currentColor" />
-            <path d="M22 8C28.6274 8 34 13.3726 34 20C34 26.6274 28.6274 32 22 32" stroke="currentColor" stroke-width="6" stroke-linecap="round" />
+            <path d="M22 8C28.6274 8 34 13.3726 34 20C34 26.6274 28.6274 32 22 32" stroke="currentColor" strokeWidth="6" strokeLinecap="round" />
             <circle cx="21" cy="20" r="3.5" className="fill-accent transition-colors duration-300" />
           </svg>
         </div>

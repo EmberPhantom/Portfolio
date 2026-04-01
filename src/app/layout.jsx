@@ -44,7 +44,7 @@ export default function RootLayout({ children }) {
       data-scroll-behavior="smooth"
       className={`${syne.variable} ${dmSans.variable} ${jetbrainsMono.variable}`}
     >
-      <body>
+      <body suppressHydrationWarning>
         <div className="min-h-screen selection:bg-orange-500/30">
           <Providers>
             <ClientLayout>{children}</ClientLayout>

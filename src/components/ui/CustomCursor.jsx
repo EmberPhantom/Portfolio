@@ -17,6 +17,7 @@ export default function CustomCursor() {
     document.body.style.cursor = 'none';
 
     const moveMouse = (e) => {
+      // Only show after first movement to avoid stray dots at (-100, -100)
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
       if (!isVisible) setIsVisible(true);
@@ -33,7 +34,9 @@ export default function CustomCursor() {
     };
 
     const handleMouseLeave = () => setIsVisible(false);
-    const handleMouseEnter = () => setIsVisible(true);
+    const handleMouseEnter = () => {
+      // Don't force visible on enter, wait for movement
+    };
 
     window.addEventListener('mousemove', moveMouse);
     window.addEventListener('mouseover', handleMouseOver);
@@ -75,7 +78,7 @@ export default function CustomCursor() {
           animate={{
             width: cursorType === 'pointer' ? 48 : 16,
             height: cursorType === 'pointer' ? 48 : 16,
-            backgroundColor: cursorType === 'pointer' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 1)',
+            backgroundColor: cursorType === 'pointer' ? '#ffffff1a' : '#ffffff',
           }}
           transition={{ type: 'spring', stiffness: 250, damping: 20 }}
         />
