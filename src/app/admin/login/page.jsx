@@ -38,6 +38,13 @@ export default function AdminLogin() {
     }
   }, []);
 
+  const withTimeout = (promise, ms = 6000) => {
+    return Promise.race([
+      promise,
+      new Promise((_, reject) => setTimeout(() => reject(new Error("Connection timeout")), ms))
+    ]);
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -46,30 +53,30 @@ export default function AdminLogin() {
     if (!supabase) {
       setError("Supabase not configured. Bypassing auth for demo format.");
       setTimeout(() => {
-        router.push('/admin');
+        window.location.href = '/admin';
       }, 1500);
       return;
     }
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await withTimeout(supabase.auth.signInWithPassword({ email, password }), 6000);
       
       if (error) {
         const msg = error.message || "";
-        if (msg.includes("fetch") || msg.includes("Failed to fetch") || msg.includes("NetworkError") || msg.includes("unreachable") || msg.includes("getaddrinfo")) {
+        if (msg.includes("fetch") || msg.includes("Failed to fetch") || msg.includes("NetworkError") || msg.includes("unreachable") || msg.includes("getaddrinfo") || msg.includes("timeout")) {
           setError("Unable to reach the authentication server. Your Supabase project might be paused, deleted, or you have a network connection issue.");
         } else {
           setError(error.message);
         }
         setLoading(false);
       } else {
-        router.push('/admin');
+        window.location.href = '/admin';
       }
     } catch (err) {
       console.error("Login auth error:", err);
       const msg = err.message || "";
-      if (msg.includes("fetch") || msg.includes("Failed to fetch") || msg.includes("NetworkError") || msg.includes("unreachable") || msg.includes("getaddrinfo")) {
-        setError("Unable to reach the authentication server. Your Supabase project might be paused, deleted, or you have a network connection issue.");
+      if (msg.includes("fetch") || msg.includes("Failed to fetch") || msg.includes("NetworkError") || msg.includes("unreachable") || msg.includes("getaddrinfo") || msg.includes("timeout") || msg.includes("Timeout")) {
+        setError("Unable to reach the authentication server (Connection Timeout). Your Supabase project might be paused, deleted, or you have a network connection issue.");
       } else {
         setError(err.message || "An unexpected error occurred during login.");
       }
@@ -84,22 +91,22 @@ export default function AdminLogin() {
     if (!supabase) {
       setError("Supabase not configured. Bypassing auth for demo format.");
       setTimeout(() => {
-        router.push('/admin');
+        window.location.href = '/admin';
       }, 1500);
       return;
     }
 
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { error } = await withTimeout(supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
         },
-      });
+      }), 6000);
 
       if (error) {
         const msg = error.message || "";
-        if (msg.includes("fetch") || msg.includes("Failed to fetch") || msg.includes("NetworkError") || msg.includes("unreachable") || msg.includes("getaddrinfo")) {
+        if (msg.includes("fetch") || msg.includes("Failed to fetch") || msg.includes("NetworkError") || msg.includes("unreachable") || msg.includes("getaddrinfo") || msg.includes("timeout")) {
           setError("Failed to connect to Google OAuth service. Your Supabase server may be unreachable.");
         } else {
           setError(error.message);
