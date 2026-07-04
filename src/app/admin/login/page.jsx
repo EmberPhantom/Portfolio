@@ -16,6 +16,16 @@ export default function AdminLogin() {
 
   useEffect(() => {
     setIsDev(window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const errorParam = params.get('error');
+      if (errorParam === 'unauthorized') {
+        setError("Unauthorized: Your account does not have admin privileges (UUID mismatch).");
+      } else if (errorParam === 'auth-failed') {
+        setError("Authentication failed. Please verify your credentials.");
+      }
+    }
   }, []);
 
   const handleLogin = async (e) => {

@@ -72,6 +72,7 @@ export async function middleware(request) {
         } catch (err) {
           // Ignore
         }
+        url.searchParams.set('error', 'unauthorized');
       }
       return NextResponse.redirect(url);
     }
