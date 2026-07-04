@@ -2,7 +2,21 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Users, Globe, Monitor, Smartphone, Tablet, Loader2, Zap } from "lucide-react"
 import { supabase } from "../../lib/supabase"
-import { getMockVisitorStats } from "../../lib/intelligence/simulation"
+
+function getMockVisitorStats() {
+  return {
+    total: 342,
+    unique: 128,
+    devices: { desktop: 65, mobile: 30, tablet: 5 },
+    countries: [
+      ['United States', 120],
+      ['India', 85],
+      ['Germany', 40],
+      ['United Kingdom', 30],
+      ['Canada', 20]
+    ]
+  };
+}
 
 export default function VisitorStats() {
   const [stats, setStats] = useState(null)

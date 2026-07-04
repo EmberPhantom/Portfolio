@@ -8,22 +8,37 @@ export async function GET(request) {
 
   if (!name) return NextResponse.json({ error: 'Name required' }, { status: 400 });
 
-  // Generate a great visual keyword using AI
-  const keyword = await getProjectVisualPrompt(name, desc);
-  
-  // Use a high-quality Unsplash source redirect or a specific high-res photo mapping
-  // We use a specific size and quality for the hero
-  const imageUrl = `https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200&auto=format&fit=crop`; // Default fallback
-  
-  // For dynamic behavior without an Unsplash API key, we construct a search-based random URL
-  // Note: source.unsplash.com is deprecated, but we can use their featured/keyword pattern if still active 
-  // or a more robust placeholder engine.
-  const dynamicUrl = `https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop`; // Secondary fallback
+  try {
+    // Generate a great visual keyword using AI
+    const keyword = await getProjectVisualPrompt(name, desc);
+    
+    // Query Unsplash's public NAPi search endpoint (no api key required)
+    const unsplashRes = await fetch(
+      `https://unsplash.com/napi/search/photos?query=${encodeURIComponent(keyword)}&per_page=3`,
+      {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        }
+      }
+    );
 
-  // Returning a structured JSON with the suggested keyword and dynamic URL
+    if (unsplashRes.ok) {
+      const data = await unsplashRes.json();
+      const results = data.results;
+      if (results && results.length > 0) {
+        const imageUrl = results[0].urls?.regular || results[0].urls?.full;
+        if (imageUrl) {
+          return NextResponse.json({ keyword, imageUrl });
+        }
+      }
+    }
+  } catch (err) {
+    console.error('Dynamic image fetch failed:', err);
+  }
+
+  // Fallback default
   return NextResponse.json({
-    keyword,
-    imageUrl: `https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=1200&auto=format&fit=crop&sig=${encodeURIComponent(keyword)}` 
-    // We add a 'sig' or similar to help handle cache-busting per project if using a random service
+    keyword: 'technology',
+    imageUrl: `https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200&auto=format&fit=crop`
   });
 }

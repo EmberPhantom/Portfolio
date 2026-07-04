@@ -12,12 +12,25 @@ export default function CustomCursor() {
   const springX = useSpring(cursorX, springConfig);
   const springY = useSpring(cursorY, springConfig);
 
+  const [isTouchDevice, setIsTouchDevice] = useState(true); // Default true until checked to avoid flash
+
   useEffect(() => {
-    // Hide native cursor
+    const isTouch = 
+      ('ontouchstart' in window) ||
+      (navigator.maxTouchPoints > 0) ||
+      (navigator.msMaxTouchPoints > 0);
+    
+    setIsTouchDevice(isTouch);
+    if (isTouch) return;
+
+    // Hide native cursor on desktop
     document.body.style.cursor = 'none';
 
+    let lastTime = 0;
     const moveMouse = (e) => {
-      // Only show after first movement to avoid stray dots at (-100, -100)
+      const now = performance.now();
+      if (now - lastTime < 16) return; // limit to ~60fps
+      lastTime = now;
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
       if (!isVisible) setIsVisible(true);
@@ -34,9 +47,7 @@ export default function CustomCursor() {
     };
 
     const handleMouseLeave = () => setIsVisible(false);
-    const handleMouseEnter = () => {
-      // Don't force visible on enter, wait for movement
-    };
+    const handleMouseEnter = () => {};
 
     window.addEventListener('mousemove', moveMouse);
     window.addEventListener('mouseover', handleMouseOver);
@@ -51,6 +62,8 @@ export default function CustomCursor() {
       document.body.style.cursor = 'auto';
     };
   }, [isVisible, cursorX, cursorY]);
+
+  if (isTouchDevice) return null;
 
   return (
     <motion.div

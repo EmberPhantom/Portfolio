@@ -67,11 +67,15 @@
   --glass-bg: rgba(255, 255, 255, 0.5);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* ===== Premium Utilities ===== */
 .glass {
   background-color: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--border);
 }
 
@@ -94,12 +98,15 @@
   background: radial-gradient(circle at center, var(--glow-1) 0%, transparent 70%);
 }
 
-* {
+html, body, a, button, input, textarea, select, [role="button"], .interactive {
   cursor: none !important;
 }
 
-a, button, input, textarea, select, [role="button"] {
-  cursor: none !important;
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --animate-scan: none;
+    --animate-pulse-ring: none;
+  }
 }
 
 body {

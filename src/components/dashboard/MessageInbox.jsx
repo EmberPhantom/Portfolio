@@ -4,7 +4,27 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Mail, Check, Trash2, Loader2, User, Clock, Inbox } from "lucide-react"
 import { supabase } from "../../lib/supabase"
-import { getMockMessages } from "../../lib/intelligence/simulation"
+
+function getMockMessages() {
+  return [
+    {
+      id: "mock-1",
+      sender: "Alice Smith",
+      email: "alice@example.com",
+      subject: "Collaboration Opportunity",
+      status: "unread",
+      date: new Date().toISOString()
+    },
+    {
+      id: "mock-2",
+      sender: "Bob Johnson",
+      email: "bob@example.com",
+      subject: "Feedback on EmberOS",
+      status: "read",
+      date: new Date(Date.now() - 86400000).toISOString()
+    }
+  ];
+}
 
 export default function MessageInbox() {
   const [messages, setMessages] = useState([])

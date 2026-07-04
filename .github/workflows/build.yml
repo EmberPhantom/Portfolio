@@ -1,0 +1,118 @@
+name: Project Build Verification
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_id:
+        description: 'Supabase Build Tracking UUID'
+        required: true
+        type: string
+
+jobs:
+  verify:
+    name: Build & Verify
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_WEBHOOK_URL: ${{ secrets.SUPABASE_WEBHOOK_URL }}
+      SUPABASE_WEBHOOK_SECRET: ${{ secrets.SUPABASE_WEBHOOK_SECRET }}
+      BUILD_ID: ${{ inputs.build_id }}
+
+    steps:
+      # Step 1: Initialize Webhook Tracking
+      - name: Initialize Tracking
+        run: |
+          if [ -z "$SUPABASE_WEBHOOK_URL" ] || [ -z "$SUPABASE_WEBHOOK_SECRET" ]; then
+            echo "::warning:: Webhook credentials not set. Logging skipped."
+            exit 0
+          fi
+          curl -s -X POST "$SUPABASE_WEBHOOK_URL" \
+            -H "Authorization: Bearer $SUPABASE_WEBHOOK_SECRET" \
+            -H "Content-Type: application/json" \
+            -d "{\"build_id\": \"$BUILD_ID\", \"step_name\": \"initialize\", \"message\": \"Build initialized on runner: host is ubuntu-latest\", \"level\": \"info\", \"github_run_id\": \"${{ github.run_id }}\"}"
+
+      # Step 2: Checkout Repository
+      - name: Checkout Repository
+        run: |
+          if [ ! -z "$SUPABASE_WEBHOOK_SECRET" ]; then
+            curl -s -X POST "$SUPABASE_WEBHOOK_URL" \
+              -H "Authorization: Bearer $SUPABASE_WEBHOOK_SECRET" \
+              -H "Content-Type: application/json" \
+              -d "{\"build_id\": \"$BUILD_ID\", \"step_name\": \"checkout\", \"message\": \"Checking out git repository ref main...\", \"level\": \"info\"}"
+          fi
+          
+      - uses: actions/checkout@v4
+
+      # Step 3: Setup Node.js Environment
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Report Node Setup Complete
+        run: |
+          if [ ! -z "$SUPABASE_WEBHOOK_SECRET" ]; then
+            curl -s -X POST "$SUPABASE_WEBHOOK_URL" \
+              -H "Authorization: Bearer $SUPABASE_WEBHOOK_SECRET" \
+              -H "Content-Type: application/json" \
+              -d "{\"build_id\": \"$BUILD_ID\", \"step_name\": \"setup_node\", \"message\": \"Node.js env setup completed (Node 20).\", \"level\": \"success\"}"
+          fi
+
+      # Step 4: Install Dependencies
+      - name: Install Dependencies
+        run: |
+          if [ ! -z "$SUPABASE_WEBHOOK_SECRET" ]; then
+            curl -s -X POST "$SUPABASE_WEBHOOK_URL" \
+              -H "Authorization: Bearer $SUPABASE_WEBHOOK_SECRET" \
+              -H "Content-Type: application/json" \
+              -d "{\"build_id\": \"$BUILD_ID\", \"step_name\": \"install\", \"message\": \"Running npm install...\", \"level\": \"info\"}"
+          fi
+          
+          npm install
+          
+          if [ ! -z "$SUPABASE_WEBHOOK_SECRET" ]; then
+            curl -s -X POST "$SUPABASE_WEBHOOK_URL" \
+              -H "Authorization: Bearer $SUPABASE_WEBHOOK_SECRET" \
+              -H "Content-Type: application/json" \
+              -d "{\"build_id\": \"$BUILD_ID\", \"step_name\": \"install\", \"message\": \"Dependencies installed successfully.\", \"level\": \"success\"}"
+          fi
+
+      # Step 5: Build Application
+      - name: Build Application
+        run: |
+          if [ ! -z "$SUPABASE_WEBHOOK_SECRET" ]; then
+            curl -s -X POST "$SUPABASE_WEBHOOK_URL" \
+              -H "Authorization: Bearer $SUPABASE_WEBHOOK_SECRET" \
+              -H "Content-Type: application/json" \
+              -d "{\"build_id\": \"$BUILD_ID\", \"step_name\": \"compile\", \"message\": \"Compiling client build with npm run build...\", \"level\": \"info\"}"
+          fi
+          
+          npm run build
+          
+          if [ ! -z "$SUPABASE_WEBHOOK_SECRET" ]; then
+            curl -s -X POST "$SUPABASE_WEBHOOK_URL" \
+              -H "Authorization: Bearer $SUPABASE_WEBHOOK_SECRET" \
+              -H "Content-Type: application/json" \
+              -d "{\"build_id\": \"$BUILD_ID\", \"step_name\": \"compile\", \"message\": \"Application compiled successfully.\", \"level\": \"success\"}"
+          fi
+
+      # Step 6: Post Build Reports (Always Runs)
+      - name: Report Final Success
+        if: success()
+        run: |
+          if [ ! -z "$SUPABASE_WEBHOOK_SECRET" ]; then
+            curl -s -X POST "$SUPABASE_WEBHOOK_URL" \
+              -H "Authorization: Bearer $SUPABASE_WEBHOOK_SECRET" \
+              -H "Content-Type: application/json" \
+              -d "{\"build_id\": \"$BUILD_ID\", \"step_name\": \"finalize\", \"message\": \"Verification build process completed without errors. Deploying status -> live.\", \"level\": \"success\", \"status\": \"success\"}"
+          fi
+
+      - name: Report Final Failure
+        if: failure()
+        run: |
+          if [ ! -z "$SUPABASE_WEBHOOK_SECRET" ]; then
+            curl -s -X POST "$SUPABASE_WEBHOOK_URL" \
+              -H "Authorization: Bearer $SUPABASE_WEBHOOK_SECRET" \
+              -H "Content-Type: application/json" \
+              -d "{\"build_id\": \"$BUILD_ID\", \"step_name\": \"finalize\", \"message\": \"Verification build failed. Check compiler output logs.\", \"level\": \"error\", \"status\": \"failed\"}"
+          fi

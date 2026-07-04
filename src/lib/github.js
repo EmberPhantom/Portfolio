@@ -8,30 +8,38 @@ export async function fetchGithubProjects() {
   };
 
   try {
-    const response = await fetch(
+    let response = await fetch(
       `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100`,
       {
         headers,
-        // Revalidate every hour
         next: { revalidate: 3600 } 
       }
     );
 
+    // If token is invalid or expired, retry without authorization
+    if (response.status === 401 && GITHUB_TOKEN) {
+      console.warn('GITHUB_TOKEN in .env.local is unauthorized (401). Retrying public fetch without token...');
+      response = await fetch(
+        `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100`,
+        {
+          headers: { 'Accept': 'application/vnd.github.v3+json' },
+          next: { revalidate: 3600 }
+        }
+      );
+    }
+
     if (!response.ok) {
       if (response.status === 403) {
-         console.error('GitHub API rate limit exceeded. Please add a GITHUB_TOKEN to .env.local');
+         console.error('GitHub API rate limit exceeded. Please add a valid GITHUB_TOKEN to .env.local');
          return [];
       }
       throw new Error(`GitHub API error: ${response.status}`);
     }
 
     const repos = await response.json();
-
-    // Filter out forks and focus on projects that might be portfolio-worthy.
-    // In the future, this could look for a specific topic like 'portfolio-project'
     const validProjects = repos.filter(repo => !repo.fork);
 
-    // Sort by stars and prioritize EmberOS if it exists
+    // Sort by stars and prioritize EmberOS
     return validProjects.sort((a, b) => {
       if (a.name.toLowerCase() === 'emberos') return -1;
       if (b.name.toLowerCase() === 'emberos') return 1;
@@ -54,16 +62,30 @@ export async function fetchRepoReadme(repoName) {
   };
 
   try {
-    const response = await fetch(
+    let response = await fetch(
       `https://api.github.com/repos/${GITHUB_USERNAME}/${repoName}/readme`,
       { 
         headers: {
             ...headers,
-             'Accept': 'application/vnd.github.v3.raw'
+            'Accept': 'application/vnd.github.v3.raw'
         },
         next: { revalidate: 86400 } 
       }
     );
+
+    // If token is invalid or expired, retry without authorization
+    if (response.status === 401 && GITHUB_TOKEN) {
+      console.warn(`GITHUB_TOKEN is unauthorized (401) fetching README for ${repoName}. Retrying public fetch...`);
+      response = await fetch(
+        `https://api.github.com/repos/${GITHUB_USERNAME}/${repoName}/readme`,
+        { 
+          headers: {
+              'Accept': 'application/vnd.github.v3.raw'
+          },
+          next: { revalidate: 86400 } 
+        }
+      );
+    }
 
     if (!response.ok) {
       if (response.status === 404) return null; // No readme

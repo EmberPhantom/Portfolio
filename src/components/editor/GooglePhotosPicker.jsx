@@ -96,7 +96,7 @@ export default function GooglePhotosPicker({ onSelect, onClose }) {
                 <Camera className="w-12 h-12 text-gray-700 mx-auto mb-4" />
                 <p className="text-gray-400 mb-2">Google Photos not connected</p>
                 <p className="text-gray-500 text-sm mb-4">Go to Settings → Google Photos Integration to connect your account.</p>
-                <a href="/dashboard/settings" className="flex items-center gap-2 text-orange-500 hover:text-orange-400 text-sm justify-center">
+                <a href="/admin/settings" className="flex items-center gap-2 text-orange-500 hover:text-orange-400 text-sm justify-center">
                   Open Settings <ExternalLink className="w-4 h-4" />
                 </a>
               </div>

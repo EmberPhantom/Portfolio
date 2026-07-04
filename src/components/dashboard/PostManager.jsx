@@ -43,14 +43,24 @@ export default function PostManager() {
 
   async function handleTogglePublish(post) {
     try {
+      const nextStatus = !post.published;
       await supabase
         .from('blog_posts')
-        .update({ published: !post.published })
-        .eq('id', post.id)
+        .update({ published: nextStatus })
+        .eq('id', post.id);
       
-      setPosts(posts.map(p => p.id === post.id ? { ...p, published: !p.published } : p))
+      setPosts(posts.map(p => p.id === post.id ? { ...p, published: nextStatus } : p));
+
+      // Trigger ingestion if toggled to published
+      if (nextStatus) {
+        fetch('/api/blog/publish', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ post_id: post.id })
+        }).catch(err => console.error('Failed to trigger ingestion on toggle:', err));
+      }
     } catch (err) {
-      console.error('Toggle error:', err)
+      console.error('Toggle error:', err);
     }
   }
 

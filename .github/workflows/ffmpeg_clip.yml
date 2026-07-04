@@ -1,0 +1,113 @@
+name: ffmpeg Video Clipping Subsystem
+
+on:
+  workflow_dispatch:
+    inputs:
+      clip_job_id:
+        description: 'Supabase Clip Job Tracking UUID'
+        required: true
+        type: string
+      video_url:
+        description: 'Video URL (YouTube or Direct Link)'
+        required: true
+        type: string
+      start_seconds:
+        description: 'Clip Start Timestamp (Seconds)'
+        required: true
+        type: string
+      end_seconds:
+        description: 'Clip End Timestamp (Seconds)'
+        required: true
+        type: string
+
+jobs:
+  extract_clip:
+    name: Extract & Publish Clip
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      SUPABASE_WEBHOOK_URL: https://uzlryapqxjbmgkesuyoj.supabase.co/functions/v1/clip_webhook
+      SUPABASE_WEBHOOK_SECRET: ${{ secrets.SUPABASE_WEBHOOK_SECRET }}
+      CLIP_JOB_ID: ${{ inputs.clip_job_id }}
+      VIDEO_URL: ${{ inputs.video_url }}
+      START_SECS: ${{ inputs.start_seconds }}
+      END_SECS: ${{ inputs.end_seconds }}
+
+    steps:
+      # Step 1: Initialize Webhook Status
+      - name: Initialize Tracking
+        run: |
+          if [ -z "$SUPABASE_WEBHOOK_SECRET" ]; then
+            echo "::warning:: Webhook credentials not set. Logging skipped."
+            exit 0
+          fi
+          curl -s -X POST "$SUPABASE_WEBHOOK_URL" \
+            -H "Authorization: Bearer $SUPABASE_WEBHOOK_SECRET" \
+            -H "Content-Type: application/json" \
+            -d "{\"clip_job_id\": \"$CLIP_JOB_ID\", \"status\": \"processing\", \"github_run_id\": \"${{ github.run_id }}\"}"
+
+      # Step 2: Install dependencies
+      - name: Install yt-dlp & ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
+          sudo chmod a+rx /usr/local/bin/yt-dlp
+
+      # Step 3: Extract the clip
+      - name: Process & Extract Clip
+        run: |
+          DURATION=$(( END_SECS - START_SECS ))
+          
+          # Check if URL is YouTube
+          if [[ "$VIDEO_URL" == *"youtube.com"* || "$VIDEO_URL" == *"youtu.be"* ]]; then
+            echo "Processing YouTube URL. Fetching direct stream..."
+            STREAM_URL=$(yt-dlp -g -f "best" "$VIDEO_URL")
+            
+            # Slice stream directly without full download
+            ffmpeg -ss "$START_SECS" -i "$STREAM_URL" -t "$DURATION" -c:v libx264 -c:a aac -preset fast -y clip.mp4
+          else
+            echo "Processing direct link..."
+            ffmpeg -ss "$START_SECS" -i "$VIDEO_URL" -t "$DURATION" -c copy -y clip.mp4
+          fi
+
+      # Step 4: Upload to Supabase Storage
+      - name: Upload to Supabase Storage
+        id: upload
+        run: |
+          # Use Supabase Storage REST API to upload the file to 'clips' bucket
+          UPLOAD_URL="${{ secrets.SUPABASE_URL }}/storage/v1/object/clips/${CLIP_JOB_ID}.mp4"
+          
+          echo "Uploading file to Supabase Storage..."
+          RESPONSE=$(curl -s -w "%{http_code}" -o /dev/null -X POST "$UPLOAD_URL" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -H "Content-Type: video/mp4" \
+            --data-binary "@clip.mp4")
+            
+          if [ "$RESPONSE" != "200" ]; then
+            echo "Upload failed with HTTP status: $RESPONSE"
+            exit 1
+          fi
+          
+          PUBLIC_URL="${{ secrets.SUPABASE_URL }}/storage/v1/object/public/clips/${CLIP_JOB_ID}.mp4"
+          echo "output_url=$PUBLIC_URL" >> $GITHUB_OUTPUT
+
+      # Step 5: Report Success callback
+      - name: Report Success
+        if: success()
+        run: |
+          PUBLIC_URL="${{ steps.upload.outputs.output_url }}"
+          curl -s -X POST "$SUPABASE_WEBHOOK_URL" \
+            -H "Authorization: Bearer $SUPABASE_WEBHOOK_SECRET" \
+            -H "Content-Type: application/json" \
+            -d "{\"clip_job_id\": \"$CLIP_JOB_ID\", \"status\": \"done\", \"output_url\": \"$PUBLIC_URL\"}"
+
+      # Step 6: Report Failure callback
+      - name: Report Failure
+        if: failure()
+        run: |
+          curl -s -X POST "$SUPABASE_WEBHOOK_URL" \
+            -H "Authorization: Bearer $SUPABASE_WEBHOOK_SECRET" \
+            -H "Content-Type: application/json" \
+            -d "{\"clip_job_id\": \"$CLIP_JOB_ID\", \"status\": \"failed\"}"

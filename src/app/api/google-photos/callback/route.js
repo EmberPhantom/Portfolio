@@ -7,7 +7,7 @@ export async function GET(request) {
   const error = searchParams.get('error');
 
   if (error || !code) {
-    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/dashboard/settings?status=google_error`);
+    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/admin/settings?status=google_error`);
   }
 
   const clientId = process.env.GOOGLE_CLIENT_ID;
@@ -23,7 +23,7 @@ export async function GET(request) {
 
   const tokens = await tokenRes.json();
   if (!tokens.access_token) {
-    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/dashboard/settings?status=token_error`);
+    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/admin/settings?status=token_error`);
   }
 
   // Store tokens in Supabase
@@ -36,5 +36,5 @@ export async function GET(request) {
     updated_at: new Date().toISOString(),
   }, { onConflict: 'provider' });
 
-  return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/dashboard/settings?status=google_connected`);
+  return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/admin/settings?status=google_connected`);
 }

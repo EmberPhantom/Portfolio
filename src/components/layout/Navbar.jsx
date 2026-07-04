@@ -1,174 +1,210 @@
-"use client";
-import { useState, useEffect } from "react";
+'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
-import {
-  Home,
-  FolderGit2,
-  TestTube2,
-  BookOpen,
-  Mail,
-  Circle,
-  Terminal as TerminalIcon,
-  Sun,
-  Moon,
-} from "lucide-react";
-import { useTheme } from "../../hooks/useTheme";
-import { useTerminal } from "../../context/TerminalContext";
-
-const navLinks = [
-  { name: "Dashboard", href: "/", icon: Home },
-  { name: "Work", href: "/work", icon: FolderGit2 },
-  { name: "Lab", href: "/lab", icon: TestTube2 },
-  { name: "Journal", href: "/blog", icon: BookOpen },
-  { name: "Connect", href: "/contact", icon: Mail },
-];
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Sun, 
+  Moon, 
+  X, 
+  Github, 
+  Linkedin, 
+  Twitter, 
+  Mail, 
+  Download, 
+  Calendar,
+  ArrowRight,
+  Sparkles
+} from 'lucide-react';
+import { useTheme } from '../../hooks/useTheme';
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
-  const { toggleTerminalMode } = useTerminal();
-  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  const roles = ["Full-Stack Developer", "AI Engineer", "Startup Founder"];
+  
   return (
     <>
-      {/* ---- Desktop Sidebar ---- */}
-      <motion.nav
-        initial={{ x: -100 }}
-        animate={{ x: 0 }}
-        className="hidden md:flex fixed left-0 top-0 h-screen w-20 lg:w-64 bg-surface/80 backdrop-blur-xl border-r border-muted/20 flex-col justify-between py-8 transition-all duration-300 z-50 overflow-y-auto"
+      <motion.header
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="fixed top-0 left-0 right-0 w-full h-14 bg-surface/30 backdrop-blur-xl border-b border-white/5 px-6 md:px-12 flex items-center justify-between z-50 select-none"
       >
-        <div className="flex flex-col items-center lg:items-start px-0 lg:px-8">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 mb-12 group/logo" title="Home" aria-label="EmberOS Home">
-            <div className="w-10 h-10 border border-muted/30 rounded-lg flex items-center justify-center bg-surface group-hover/logo:border-accent group-hover/logo:shadow-[0_0_15px_var(--accent)] transition-all duration-300">
-              <svg width="24" height="24" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-text">
-                <rect x="8" y="4" width="6" height="32" rx="1" fill="currentColor"/>
-                <path d="M22 8C28.6274 8 34 13.3726 34 20C34 26.6274 28.6274 32 22 32" stroke="currentColor" strokeWidth="6" strokeLinecap="round"/>
-                <circle cx="21" cy="20" r="3.5" className="fill-accent transition-colors duration-300" />
-              </svg>
-            </div>
-            <span className="font-display font-bold text-xl text-text hidden lg:block tracking-tighter group-hover/logo:text-accent transition-colors">
-              EmberOS
-            </span>
-          </Link>
+        {/* Left Section: Premium Branding */}
+        <Link href="/" className="flex items-center gap-3 group" aria-label="Pranay Chandra Home">
+          <span className="font-display font-black text-sm tracking-widest text-text uppercase group-hover:text-accent transition-colors">
+            PRANAY CHANDRA <span className="text-accent/50 group-hover:text-accent">/</span> BUILDER
+          </span>
+        </Link>
 
-          {/* Nav Links */}
-          <div className="w-full flex flex-col gap-2">
-            {navLinks.map((link) => {
-              const Icon = link.icon;
-              const isActive =
-                pathname === link.href ||
-                (link.href !== "/" && pathname.startsWith(link.href));
+        {/* Right Section: Theme Toggle & Expandable Profile Image */}
+        <div className="flex items-center gap-5">
+          {/* Theme Button */}
+          <button
+            onClick={toggleTheme}
+            className="p-2 bg-white/5 hover:bg-white/10 rounded-xl transition-all text-text-muted hover:text-text border border-white/5 active:scale-95"
+            title="Toggle Theme"
+            aria-label="Toggle Theme"
+          >
+            {mounted && (
+              theme === "dark" ? <Sun className="w-4 h-4 text-orange-400" /> : <Moon className="w-4 h-4" />
+            )}
+          </button>
 
-              return (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  aria-label={link.name}
-                  className={`relative flex items-center justify-center lg:justify-start gap-4 p-3 rounded-xl transition-all group ${
-                    isActive
-                      ? "text-accent bg-accent/10"
-                      : "text-text-muted hover:text-text hover:bg-muted/20"
-                  }`}
-                  title={link.name}
-                >
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeNavIndicator"
-                      className="absolute left-0 w-1 h-1/2 bg-accent rounded-r-md hidden lg:block"
-                    />
-                  )}
-                  <Icon
-                    className={`w-5 h-5 transition-colors ${
-                      isActive ? "text-accent" : "group-hover:text-text"
-                    }`}
+          {/* Profile Image Trigger */}
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="relative w-9 h-9 rounded-full border border-accent/30 overflow-hidden shadow-lg shadow-accent/5 hover:scale-105 active:scale-95 transition-all outline-none"
+            aria-label="Open Profile Details"
+          >
+            <img
+              src="/images/pranay-real.png"
+              alt="Pranay Chandra"
+              className="w-full h-full object-cover"
+            />
+            <span className="absolute inset-0 rounded-full border border-accent animate-pulse scale-105 opacity-20 pointer-events-none" />
+          </button>
+        </div>
+      </motion.header>
+
+      {/* Profile Modal Overlay */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsModalOpen(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-md"
+            />
+
+            {/* Modal Card */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 24 }}
+              className="relative w-full max-w-lg bg-surface/80 backdrop-blur-3xl border border-white/10 p-8 rounded-[2.5rem] shadow-2xl flex flex-col z-10 overflow-hidden"
+            >
+              {/* Decorative Accent Glow */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
+
+              {/* Close Button */}
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="absolute top-6 right-6 p-2 bg-white/5 hover:bg-white/10 rounded-full transition-all text-text-muted hover:text-text border border-white/5 active:scale-95"
+                aria-label="Close details"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              {/* Profile Details Layout */}
+              <div className="flex flex-col items-center text-center mt-4">
+                {/* Photo Swap Showcase */}
+                <div className="relative w-24 h-24 rounded-full border-2 border-accent/40 overflow-hidden group shadow-lg mb-4">
+                  <img
+                    src="/images/pranay-real.png"
+                    alt="Pranay Chandra"
+                    className="absolute inset-0 w-full h-full object-cover group-hover:opacity-0 transition-opacity duration-300"
                   />
-                  <span className="font-medium text-sm hidden lg:block">
-                    {link.name}
-                  </span>
-                </Link>
-              );
-            })}
+                  <img
+                    src="/images/pranay-avatar.png"
+                    alt="Pranay Chandra Avatar"
+                    className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-bg"
+                  />
+                </div>
+
+                <h3 className="font-display font-black text-2xl tracking-tight text-text uppercase">
+                  PRANAY CHANDRA
+                </h3>
+
+                {/* Animated Role Badges */}
+                <div className="flex flex-wrap items-center justify-center gap-2 mt-2">
+                  {roles.map((role, idx) => (
+                    <span 
+                      key={idx} 
+                      className="text-[9px] font-mono font-bold uppercase tracking-wider bg-accent/10 text-accent border border-accent/20 px-2.5 py-0.5 rounded-full"
+                    >
+                      {role}
+                    </span>
+                  ))}
+                </div>
+
+                <p className="text-text-muted text-sm font-body mt-6 leading-relaxed max-w-sm">
+                  Full-stack and AI engineer. Founded AnserTech, a production AI business-automation platform with a real-time voice AI pipeline running at sub-500ms latency.
+                </p>
+              </div>
+
+              {/* Social Networks Linkages */}
+              <div className="grid grid-cols-4 gap-3 mt-8">
+                <a
+                  href="https://github.com/EmberPhantom"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="p-3 bg-white/5 hover:bg-accent/10 border border-white/5 hover:border-accent/30 rounded-2xl flex flex-col items-center gap-1.5 transition-all group"
+                >
+                  <Github className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
+                  <span className="text-[8px] font-mono tracking-widest text-text-muted uppercase">GitHub</span>
+                </a>
+                <a
+                  href="https://linkedin.com/in/pranay-chandra-wdp"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="p-3 bg-white/5 hover:bg-accent/10 border border-white/5 hover:border-accent/30 rounded-2xl flex flex-col items-center gap-1.5 transition-all group"
+                >
+                  <Linkedin className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
+                  <span className="text-[8px] font-mono tracking-widest text-text-muted uppercase">LinkedIn</span>
+                </a>
+                <a
+                  href="https://x.com/_PranayChandra_"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="p-3 bg-white/5 hover:bg-accent/10 border border-white/5 hover:border-accent/30 rounded-2xl flex flex-col items-center gap-1.5 transition-all group"
+                >
+                  <Twitter className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
+                  <span className="text-[8px] font-mono tracking-widest text-text-muted uppercase">Twitter</span>
+                </a>
+                <a
+                  href="mailto:pranaychandra751@gmail.com"
+                  className="p-3 bg-white/5 hover:bg-accent/10 border border-white/5 hover:border-accent/30 rounded-2xl flex flex-col items-center gap-1.5 transition-all group"
+                >
+                  <Mail className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
+                  <span className="text-[8px] font-mono tracking-widest text-text-muted uppercase">Mail</span>
+                </a>
+              </div>
+
+              {/* Quick Call-to-Actions */}
+              <div className="flex flex-col gap-2.5 mt-8">
+                <a
+                  href="https://calendly.com/pranaychandra/30min"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full py-3.5 bg-accent text-bg font-black rounded-xl hover:bg-accent/90 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest shadow-lg shadow-accent/10"
+                >
+                  <Calendar className="w-4 h-4" /> Book Calendly Session <ArrowRight className="w-3.5 h-3.5" />
+                </a>
+
+                <a
+                  href="/Pranay_Chandra_Resume.pdf"
+                  download
+                  className="w-full py-3.5 bg-white/5 hover:bg-white/10 text-text font-black rounded-xl border border-white/5 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest"
+                >
+                  <Download className="w-4 h-4 text-accent" /> Get My CV / Resume
+                </a>
+              </div>
+            </motion.div>
           </div>
-        </div>
-
-        {/* Bottom Controls */}
-        <div className="flex flex-col items-center lg:items-start px-0 lg:px-8 gap-4">
-          <div className="flex flex-col lg:flex-row items-center gap-2 lg:gap-4 mb-4">
-            <button
-              onClick={toggleTerminalMode}
-              className="p-3 bg-muted/10 rounded-xl hover:bg-muted/30 transition-colors group"
-              title="Terminal Mode"
-              aria-label="Open Terminal"
-            >
-              <TerminalIcon className="w-5 h-5 text-text-muted group-hover:text-accent" />
-            </button>
-
-            <button
-              onClick={toggleTheme}
-              className="p-3 bg-muted/10 rounded-xl hover:bg-muted/30 transition-colors"
-              title="Toggle Theme"
-              aria-label={!mounted ? "Toggle Theme" : (theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode")}
-            >
-              {mounted && (
-                theme === "dark" ? (
-                  <Sun className="w-5 h-5 text-text-muted" />
-                ) : (
-                  <Moon className="w-5 h-5 text-text-muted" />
-                )
-              )}
-            </button>
-          </div>
-
-          <div className="flex flex-col items-center lg:flex-row lg:items-center gap-3 p-3 bg-muted/5 rounded-xl w-full justify-center lg:justify-start border border-muted/10 text-[10px] uppercase tracking-widest">
-            <div className="relative">
-              <Circle className="w-2 h-2 fill-green-500 text-green-500 shrink-0" />
-              <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-20" />
-            </div>
-            <span className="text-text-muted hidden lg:inline">
-              System: <span className="text-text font-bold">Stable</span>
-            </span>
-          </div>
-        </div>
-      </motion.nav>
-
-      {/* ---- Mobile Bottom Navigation Bar ---- */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 h-20 bg-surface/95 backdrop-blur-xl border-t border-muted/20 flex items-center justify-around z-50 px-2 pb-4 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
-        {navLinks.map((link) => {
-          const Icon = link.icon;
-          const isActive =
-            pathname === link.href ||
-            (link.href !== "/" && pathname.startsWith(link.href));
-          return (
-            <Link
-              key={link.name}
-              href={link.href}
-              aria-label={link.name}
-              className={`flex flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-xl transition-colors ${
-                isActive ? "text-accent" : "text-text-muted"
-              }`}
-            >
-              <Icon className="w-5 h-5" />
-              <span className="text-[10px] font-medium tracking-wide">{link.name}</span>
-            </Link>
-          );
-        })}
-        <button
-          onClick={toggleTerminalMode}
-          aria-label="Open Terminal"
-          className="flex flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-xl text-text-muted hover:text-accent transition-colors"
-        >
-          <TerminalIcon className="w-5 h-5" />
-          <span className="text-[10px] font-medium tracking-wide">CLI</span>
-        </button>
-      </nav>
+        )}
+      </AnimatePresence>
     </>
   );
 }

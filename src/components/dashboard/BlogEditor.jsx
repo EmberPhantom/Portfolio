@@ -109,12 +109,40 @@ export default function BlogEditor({ post, onSave, onCancel }) {
 
       console.log('Final Payload:', payload);
 
+      let savedPost = null;
       if (post?.id) {
-        const { error } = await supabase.from('blog_posts').update(payload).eq('id', post.id);
+        const { data, error } = await supabase
+          .from('blog_posts')
+          .update(payload)
+          .eq('id', post.id)
+          .select()
+          .single();
         if (error) throw error;
+        savedPost = data;
       } else {
-        const { error } = await supabase.from('blog_posts').insert([{ ...payload, created_at: new Date().toISOString(), views: 0 }]);
+        const { data, error } = await supabase
+          .from('blog_posts')
+          .insert([{ ...payload, created_at: new Date().toISOString(), views: 0 }])
+          .select()
+          .single();
         if (error) throw error;
+        savedPost = data;
+      }
+
+      // If published, trigger the draft ingestion pipeline
+      if (payload.published && savedPost?.id) {
+        try {
+          const triggerRes = await fetch('/api/blog/publish', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ post_id: savedPost.id })
+          });
+          if (!triggerRes.ok) {
+            console.warn('Draft ingestion queue trigger failed');
+          }
+        } catch (triggerErr) {
+          console.error('Trigger drafts ingestion error:', triggerErr);
+        }
       }
 
       // Update AI memory from article content

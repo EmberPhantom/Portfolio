@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const TerminalContext = createContext(null);
 
@@ -9,6 +9,18 @@ export function TerminalProvider({ children }) {
   const toggleTerminalMode = () => {
     setIsTerminalMode((prev) => !prev);
   };
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Toggle on Ctrl+K or Cmd+K
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleTerminalMode();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
     <TerminalContext.Provider value={{ isTerminalMode, toggleTerminalMode, setIsTerminalMode }}>

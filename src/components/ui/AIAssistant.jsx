@@ -214,6 +214,7 @@ export default function AIAssistant() {
   const [thinkingStep, setThinkingStep] = useState('');
   const [deepMode, setDeepMode] = useState(false);
   const [systemPrompt, setSystemPrompt] = useState('');
+  const [showScrollButton, setShowScrollButton] = useState(false);
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -225,9 +226,33 @@ export default function AIAssistant() {
     if (isOpen) setTimeout(() => inputRef.current?.focus(), 200);
   }, [isOpen, systemPrompt]);
 
+  // Improved auto-scroll and scroll listener
   useEffect(() => {
-    if (scrollRef.current) scrollRef.current.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
-  }, [messages, isTyping]);
+    const handleScroll = () => {
+      if (scrollRef.current) {
+        const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+        setShowScrollButton(scrollHeight - scrollTop - clientHeight > 100);
+      }
+    };
+
+    const container = scrollRef.current;
+    if (container) container.addEventListener('scroll', handleScroll);
+
+    const scrollToBottom = () => {
+      if (scrollRef.current) {
+        scrollRef.current.scrollTo({
+          top: scrollRef.current.scrollHeight,
+          behavior: 'smooth'
+        });
+      }
+    };
+
+    const timeoutId = setTimeout(scrollToBottom, 100);
+    return () => {
+      clearTimeout(timeoutId);
+      if (container) container.removeEventListener('scroll', handleScroll);
+    };
+  }, [messages, isTyping, thinkingStep]);
 
   const handleSend = useCallback(async (e) => {
     e?.preventDefault();
@@ -335,8 +360,8 @@ export default function AIAssistant() {
               } 
               ${deepMode ? 'ring-2 ring-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.15)]' : ''}`}
             style={{ 
-              height: isFullScreen ? 'calc(100vh - 6rem)' : '600px', 
-              maxHeight: '90vh',
+              height: isFullScreen ? 'calc(100vh - 6rem)' : 'min(640px, 70vh)', 
+              maxHeight: isFullScreen ? '100vh' : '85vh',
               // Avoiding oklab animation issues by using calculated fallbacks if needed
               boxShadow: deepMode ? '0 0 30px rgba(168,85,247,0.15)' : '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
             }}
@@ -388,7 +413,11 @@ export default function AIAssistant() {
             </AnimatePresence>
 
             {/* Messages */}
-            <div ref={scrollRef} className="flex-1 px-4 py-4 overflow-y-auto flex flex-col gap-4">
+            <div 
+              ref={scrollRef} 
+              className="flex-1 px-4 py-4 overflow-y-auto flex flex-col gap-4 overscroll-contain min-h-0 scrollbar-thin"
+              style={{ WebkitOverflowScrolling: 'touch' }}
+            >
               {messages.map((msg, idx) => <MessageBubble key={idx} msg={msg} />)}
               
               {thinkingStep && (
@@ -413,6 +442,22 @@ export default function AIAssistant() {
                   </div>
                 </div>
               )}
+
+              {/* Scroll to Bottom Button */}
+              <AnimatePresence>
+                {showScrollButton && (
+                  <motion.button
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    onClick={() => scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })}
+                    className="absolute bottom-24 left-1/2 -translate-x-1/2 bg-accent/80 backdrop-blur-md text-bg px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl border border-white/10 flex items-center gap-2 hover:bg-accent transition-all z-20"
+                  >
+                    <ChevronDown className="w-3 h-3" />
+                    New Messages
+                  </motion.button>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Quick Prompts */}

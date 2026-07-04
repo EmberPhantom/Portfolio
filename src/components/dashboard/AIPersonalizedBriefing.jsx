@@ -2,7 +2,18 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, ArrowRight, Brain, Target, Zap, Github, Image, Folder, Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
-import { getMockIntelligence } from '../../lib/intelligence/simulation';
+
+function getMockIntelligence() {
+  return {
+    current_focus: "Architecting autonomous pipeline systems using Django and Supabase Edge integrations.",
+    life_mood: "CALIBRATED_ENGINEERING_FOCUS",
+    suggested_actions: [
+      "Review GitHub live telemetry status",
+      "Deploy site_config schema to production",
+      "Draft next journal entry about performance optimization"
+    ]
+  };
+}
 
 export default function AIPersonalizedBriefing() {
   const [insight, setInsight] = useState(null);
