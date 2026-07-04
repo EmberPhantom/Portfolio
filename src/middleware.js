@@ -38,25 +38,39 @@ export async function middleware(request) {
     let user = null;
     let isSupabaseOffline = false;
     try {
-      const {
-        data: { user: foundUser },
-      } = await supabase.auth.getUser();
-      user = foundUser;
+      const response = await supabase.auth.getUser();
+      if (response && response.error) {
+        const msg = response.error.message || "";
+        if (msg.includes("fetch") || msg.includes("Failed to fetch") || msg.includes("NetworkError") || msg.includes("unreachable") || msg.includes("getaddrinfo") || msg.includes("ENOTFOUND")) {
+          isSupabaseOffline = true;
+        }
+      } else if (response && response.data) {
+        user = response.data.user;
+      }
     } catch (err) {
       console.error('Middleware Auth Error (unreachable Supabase):', err.message);
       const msg = err.message || "";
-      if (msg.includes("fetch") || msg.includes("ENOTFOUND") || msg.includes("connect")) {
+      if (
+        msg.includes("fetch") || 
+        msg.includes("Failed to fetch") || 
+        msg.includes("NetworkError") || 
+        msg.includes("unreachable") || 
+        msg.includes("getaddrinfo") || 
+        msg.includes("ENOTFOUND") ||
+        msg.includes("Cannot read properties of null")
+      ) {
         isSupabaseOffline = true;
       }
     }
 
     const adminUuid = process.env.ADMIN_USER_UUID;
 
-    // Check for offline/local bypass cookie when Supabase is unreachable
+    // Check for offline/local bypass cookie
     const bypassCookie = request.cookies.get('emberos_offline_bypass')?.value;
     const isOfflineBypassed = bypassCookie === 'true';
 
-    if (isSupabaseOffline && isOfflineBypassed) {
+    // If the bypass cookie is set, allow accessing /admin directly
+    if (isOfflineBypassed) {
       return response;
     }
 

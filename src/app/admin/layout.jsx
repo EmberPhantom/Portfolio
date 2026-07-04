@@ -14,6 +14,13 @@ export default function AdminLayout({ children }) {
   const pathname = usePathname();
 
   useEffect(() => {
+    // Check client-side offline bypass cookie
+    const isOfflineBypassed = typeof document !== "undefined" && document.cookie.includes("emberos_offline_bypass=true");
+    if (isOfflineBypassed) {
+      setLoading(false);
+      return;
+    }
+
     if (!supabase) {
       setLoading(false);
       return;
@@ -34,6 +41,9 @@ export default function AdminLayout({ children }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      const currentBypass = typeof document !== "undefined" && document.cookie.includes("emberos_offline_bypass=true");
+      if (currentBypass) return;
+
       setSession(session);
       if (!session && pathname !== "/admin/login") router.push("/admin/login");
     });

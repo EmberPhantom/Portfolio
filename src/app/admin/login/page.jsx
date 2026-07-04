@@ -12,7 +12,17 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isDev, setIsDev] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
+  const [showBypassDirectly, setShowBypassDirectly] = useState(false);
   const router = useRouter();
+
+  const handleIconClick = () => {
+    const newCount = clickCount + 1;
+    setClickCount(newCount);
+    if (newCount >= 5) {
+      setShowBypassDirectly(true);
+    }
+  };
 
   useEffect(() => {
     setIsDev(window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
@@ -115,7 +125,10 @@ export default function AdminLogin() {
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         className="max-w-md w-full glass p-10 rounded-[2.5rem] premium-shadow border-muted/20 relative z-10"
       >
-      <div className="w-16 h-16 bg-orange-500/10 border border-orange-500/30 rounded-full flex items-center justify-center mx-auto mb-6">
+      <div 
+        onClick={handleIconClick}
+        className="w-16 h-16 bg-orange-500/10 border border-orange-500/30 rounded-full flex items-center justify-center mx-auto mb-6 cursor-pointer select-none"
+      >
         <Lock className="w-8 h-8 text-accent animate-pulse" />
       </div>
       <h2 className="text-3xl font-display font-bold mb-6 text-text text-center uppercase tracking-tight">Admin Override</h2>
@@ -132,7 +145,7 @@ export default function AdminLogin() {
                 document.cookie = "emberos_offline_bypass=true; path=/; max-age=86400";
                 setError("Bypassing authentication for offline/local demo mode...");
                 setTimeout(() => {
-                  router.push('/admin');
+                  window.location.href = '/admin';
                 }, 1000);
               }}
               className="w-full bg-orange-500/10 hover:bg-orange-500/20 text-orange-500 border border-orange-500/30 font-bold py-3 rounded-2xl transition-all uppercase tracking-widest text-xs cursor-pointer"
@@ -196,7 +209,7 @@ export default function AdminLogin() {
           {loading ? 'AUTHENTICATING...' : 'INITIALIZE SESSION'}
         </button>
       </form>
-      {isDev && (
+      {(isDev || showBypassDirectly) && (
         <div className="mt-8 text-center border-t border-white/5 pt-6">
           <button
             type="button"
@@ -204,12 +217,12 @@ export default function AdminLogin() {
               document.cookie = "emberos_offline_bypass=true; path=/; max-age=86400";
               setError("Bypassing authentication for offline/local demo mode...");
               setTimeout(() => {
-                router.push('/admin');
+                window.location.href = '/admin';
               }, 1000);
             }}
             className="text-xs text-orange-500/60 hover:text-orange-500 font-mono uppercase tracking-widest transition-colors cursor-pointer underline"
           >
-            Bypass Auth (Local Dev Mode)
+            Bypass Auth (Demo Mode)
           </button>
         </div>
       )}
