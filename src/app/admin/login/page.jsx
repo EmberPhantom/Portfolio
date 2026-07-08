@@ -70,6 +70,7 @@ export default function AdminLogin() {
         }
         setLoading(false);
       } else {
+        setLoading(false);
         window.location.href = '/admin';
       }
     } catch (err) {

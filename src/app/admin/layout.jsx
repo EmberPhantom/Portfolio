@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "../../lib/supabase";
@@ -12,6 +12,11 @@ export default function AdminLayout({ children }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
+  const pathnameRef = useRef(pathname);
+
+  useEffect(() => {
+    pathnameRef.current = pathname;
+  }, [pathname]);
 
   useEffect(() => {
     // Check client-side offline bypass cookie
@@ -26,15 +31,23 @@ export default function AdminLayout({ children }) {
       return;
     }
 
-    supabase.auth.getSession()
-      .then(({ data: { session } }) => {
-        if (!session && pathname !== "/admin/login") router.push("/admin/login");
-        else setSession(session);
+    supabase.auth.getUser()
+      .then(({ data: { user }, error }) => {
+        if ((!user || error) && pathnameRef.current !== "/admin/login") {
+          router.push("/admin/login");
+        } else if (user) {
+          const adminUuid = process.env.ADMIN_USER_UUID;
+          if (adminUuid && user.id !== adminUuid) {
+            router.push("/admin/login?error=unauthorized");
+          } else {
+            setSession(user);
+          }
+        }
         setLoading(false);
       })
       .catch((err) => {
-        console.warn("Auth session retrieval error:", err.message);
-        if (pathname !== "/admin/login") router.push("/admin/login");
+        console.warn("Auth user retrieval error:", err.message);
+        if (pathnameRef.current !== "/admin/login") router.push("/admin/login");
         setLoading(false);
       });
 
@@ -45,11 +58,11 @@ export default function AdminLayout({ children }) {
       if (currentBypass) return;
 
       setSession(session);
-      if (!session && pathname !== "/admin/login") router.push("/admin/login");
+      if (!session && pathnameRef.current !== "/admin/login") router.push("/admin/login");
     });
 
     return () => subscription.unsubscribe();
-  }, [router, pathname]);
+  }, [router]);
 
   if (loading) {
     return (

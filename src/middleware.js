@@ -38,14 +38,14 @@ export async function middleware(request) {
     let user = null;
     let isSupabaseOffline = false;
     try {
-      const response = await supabase.auth.getUser();
-      if (response && response.error) {
-        const msg = response.error.message || "";
+      const authResult = await supabase.auth.getUser();
+      if (authResult && authResult.error) {
+        const msg = authResult.error.message || "";
         if (msg.includes("fetch") || msg.includes("Failed to fetch") || msg.includes("NetworkError") || msg.includes("unreachable") || msg.includes("getaddrinfo") || msg.includes("ENOTFOUND")) {
           isSupabaseOffline = true;
         }
-      } else if (response && response.data) {
-        user = response.data.user;
+      } else if (authResult && authResult.data) {
+        user = authResult.data.user;
       }
     } catch (err) {
       console.error('Middleware Auth Error (unreachable Supabase):', err.message);
@@ -69,8 +69,8 @@ export async function middleware(request) {
     const bypassCookie = request.cookies.get('emberos_offline_bypass')?.value;
     const isOfflineBypassed = bypassCookie === 'true';
 
-    // If the bypass cookie is set, allow accessing /admin directly
-    if (isOfflineBypassed) {
+    // If the bypass cookie is set, or if Supabase is offline/unreachable, allow accessing /admin directly
+    if (isOfflineBypassed || isSupabaseOffline) {
       return response;
     }
 
